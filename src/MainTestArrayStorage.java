@@ -1,4 +1,4 @@
-/**
+/*
  * Test for your ArrayStorage implementation
  */
 public class MainTestArrayStorage {
