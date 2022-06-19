@@ -2,34 +2,35 @@ package com.urise.webapp.storage;
 
 import com.urise.webapp.model.Resume;
 
+import java.util.Arrays;
+
 /**
  * Array based storage for Resumes
  */
 public class ArrayStorage {
-    Resume[] storage = new Resume[10000];
-    int size = 0;
+    private final Resume[] storage = new Resume[10000];
+    private int size = 0;
 
     public void clear() {
-        for (int i = 0; i < size; i++) {
-            storage[i] = null;
-        }
+        Arrays.fill(storage, null);
         size = 0;
     }
 
     public void update(Resume resume) {
-        if (!isResumeExist(resume.getUuid())) {
-            System.out.println("ERROR: Resume is not found");
+        int searchKey;
+        searchKey = getSearchKey(resume.getUuid());
+        if (searchKey != -1) {
+            storage[searchKey] = resume;
             return;
         }
-        for (int i = 0; i < size; i++) {
-            if (storage[i].equals(resume.getUuid())) {
-                storage[i] = resume;
-            }
-        }
+        System.out.println("ERROR: Resume is not found");
     }
 
     public void save(Resume r) {
-        if (isResumeExist(r.getUuid())) {
+        if (size + 1 > storage.length) {
+            System.out.println("ERROR: Number of resume is more that resume storage");
+            return;
+        } else if ((getSearchKey(r.getUuid()) != -1)) {
             System.out.println("ERROR: Resume is found");
             return;
         }
@@ -38,44 +39,36 @@ public class ArrayStorage {
     }
 
     public Resume get(String uuid) {
-        if (!isResumeExist(uuid)) {
+        int searchKey;
+        searchKey = getSearchKey(uuid);
+        if (searchKey == -1) {
             System.out.println("ERROR: Resume is not found");
+            return null;
         }
-        for (int i = 0; i < size; i++) {
-            return storage[i];
-        }
-        return null;
+        return storage[searchKey];
     }
 
     public void delete(String uuid) {
-        if (!isResumeExist(uuid)) {
+        int searchKey;
+        Resume lastElementOfStorage;
+        searchKey = getSearchKey(uuid);
+        if (searchKey == -1) {
             System.out.println("ERROR: Resume is not found");
+            return;
         }
-        int indexOfNull = -1;
-        for (int i = 0; i < size; i++) {
-            if (storage[i].getUuid().equals(uuid)) {
-                indexOfNull = i;
-                break;
-            }
-        }
-        if (indexOfNull != -1) {
-            for (int i = indexOfNull; i < size; i++) {
-                storage[i] = storage[i + 1];
-                indexOfNull += 1;
-            }
-            size--;
-            storage[indexOfNull] = null;
-        }
+        lastElementOfStorage = storage[size - 1];
+        storage[size] = storage[searchKey];
+        storage[size] = null;
+        storage[searchKey] = lastElementOfStorage;
+        size--;
+
     }
 
     /**
      * @return array, contains only Resumes in storage (without null)
      */
     public Resume[] getAll() {
-        Resume[] storageWithoutNull = new Resume[size];
-        for (int i = 0; i < size; i++) {
-            storageWithoutNull[i] = storage[i];
-        }
+        Resume[] storageWithoutNull = Arrays.copyOf(storage, size);
         return storageWithoutNull;
     }
 
@@ -83,15 +76,12 @@ public class ArrayStorage {
         return size;
     }
 
-    private boolean isResumeExist(String uuid) {
-        if (size == 0) {
-            return false;
-        }
+    private int getSearchKey(String uuid) {
         for (int i = 0; i < size; i++) {
             if (storage[i].getUuid().equals(uuid)) {
-                return true;
+                return i;
             }
         }
-        return false;
+        return -1;
     }
 }
