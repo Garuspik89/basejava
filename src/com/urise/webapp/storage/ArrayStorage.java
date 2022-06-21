@@ -26,7 +26,7 @@ public class ArrayStorage {
     }
 
     public void save(Resume r) {
-        if (storage.length < size) {
+        if (storage.length == size) {
             System.out.println("ERROR: Number of resume is more that resume storage");
         } else if ((getSearchKey(r.getUuid()) != -1)) {
             System.out.println("ERROR: Resume is found");
