@@ -17,8 +17,7 @@ public class ArrayStorage {
     }
 
     public void update(Resume resume) {
-        int searchKey;
-        searchKey = getSearchKey(resume.getUuid());
+        int searchKey = getSearchKey(resume.getUuid());
         if (searchKey != -1) {
             storage[searchKey] = resume;
             return;
@@ -27,20 +26,18 @@ public class ArrayStorage {
     }
 
     public void save(Resume r) {
-        if (size + 1 > storage.length) {
+        if (storage.length < size) {
             System.out.println("ERROR: Number of resume is more that resume storage");
-            return;
         } else if ((getSearchKey(r.getUuid()) != -1)) {
             System.out.println("ERROR: Resume is found");
-            return;
+        } else {
+            storage[size] = r;
+            size++;
         }
-        storage[size] = r;
-        size++;
     }
 
     public Resume get(String uuid) {
-        int searchKey;
-        searchKey = getSearchKey(uuid);
+        int searchKey = getSearchKey(uuid);
         if (searchKey == -1) {
             System.out.println("ERROR: Resume is not found");
             return null;
@@ -49,17 +46,15 @@ public class ArrayStorage {
     }
 
     public void delete(String uuid) {
-        int searchKey;
+        int searchKey = getSearchKey(uuid);
         Resume lastElementOfStorage;
-        searchKey = getSearchKey(uuid);
         if (searchKey == -1) {
             System.out.println("ERROR: Resume is not found");
             return;
         }
-        lastElementOfStorage = storage[size - 1];
-        storage[size] = storage[searchKey];
-        storage[size] = null;
-        storage[searchKey] = lastElementOfStorage;
+
+        storage[searchKey] = null;
+        storage[searchKey] = storage[size - 1];
         size--;
 
     }
@@ -68,8 +63,7 @@ public class ArrayStorage {
      * @return array, contains only Resumes in storage (without null)
      */
     public Resume[] getAll() {
-        Resume[] storageWithoutNull = Arrays.copyOf(storage, size);
-        return storageWithoutNull;
+        return Arrays.copyOf(storage, size);
     }
 
     public int size() {
