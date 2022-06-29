@@ -7,7 +7,7 @@ import java.util.Arrays;
 /**
  * Array based storage for Resumes
  */
-public class ArrayStorage {
+public class ArrayStorage extends  AbstractArrayStorage{
     private final Resume[] storage = new Resume[10000];
     private int size = 0;
 
@@ -66,11 +66,13 @@ public class ArrayStorage {
         return Arrays.copyOf(storage, size);
     }
 
+
+
     public int size() {
         return size;
     }
 
-    private int getSearchKey(String uuid) {
+    protected int getSearchKey(String uuid) {
         for (int i = 0; i < size; i++) {
             if (storage[i].getUuid().equals(uuid)) {
                 return i;
