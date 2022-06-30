@@ -1,38 +1,82 @@
 package com.urise.webapp.storage;
 
 import com.urise.webapp.model.Resume;
-    /**
-     * Array based storage for Resumes
-     */
-    public abstract class AbstractArrayStorage  {
-        protected static final int STORAGE_LIMIT = 10000;
 
-        protected Resume[] storage = new Resume[STORAGE_LIMIT];
-        protected int size = 0;
+import java.util.Arrays;
 
-        public int size() {
-            return size;
-        }
+/**
+ * Array based storage for Resumes
+ */
+public abstract class AbstractArrayStorage {
+    protected static final int STORAGE_LIMIT = 10000;
 
-        public Resume get(String uuid) {
-            int index = getSearchKey(uuid);
-            if (index == -1) {
-                System.out.println("Resume " + uuid + " not exist");
-                return null;
-            }
-            return storage[index];
-        }
+    protected Resume[] storage = new Resume[STORAGE_LIMIT];
+    protected int size = 0;
 
-        public abstract void clear();
-
-        public abstract void update(Resume r);
-
-        public abstract void save(Resume r);
-
-        public abstract void delete(String uuid);
-
-        public abstract Resume[] getAll();
-
-        protected abstract int getSearchKey(String uuid);
+    public int size() {
+        return size;
     }
+
+    public Resume get(String uuid) {
+        int index = getSearchKey(uuid);
+        if (index < 0) {
+            System.out.println("Resume " + uuid + " not exist");
+            return null;
+        }
+        return storage[index];
+    }
+
+    public void clear() {
+        Arrays.fill(storage, null);
+        size = 0;
+    }
+
+    public void update(Resume resume) {
+        int searchKey = getSearchKey(resume.getUuid());
+        if (searchKey >= 0) {
+            storage[searchKey] = resume;
+            return;
+        }
+        System.out.println("ERROR: Resume is not found");
+
+    }
+
+
+    public Resume[] getAll() {
+        return Arrays.copyOf(storage, size);
+    }
+
+    public void save(Resume r) {
+        int index = getSearchKey(r.getUuid());
+        if (storage.length == size) {
+            System.out.println("ERROR: Number of resume is more that resume storage");
+        } else if ((index >= 0)) {
+            System.out.println("ERROR: Resume is found");
+        } else {
+            addResumeToList(r,index);
+            size++;
+        }
+
+    }
+
+    public void delete(String uuid) {
+        int searchKey = getSearchKey(uuid);
+        if (searchKey < 0) {
+            System.out.println("ERROR: Resume is not found");
+            return;
+        }
+        int indexDelete = size - searchKey - 1;
+        if (indexDelete >= 0) {
+            removeResumeFromList(searchKey);
+            storage[size - 1] = null;
+            size--;
+        }
+    }
+
+    abstract void addResumeToList(Resume r, int index);
+
+    abstract void removeResumeFromList(int searchKey);
+
+    abstract protected int getSearchKey(String uuid);
+}
 
