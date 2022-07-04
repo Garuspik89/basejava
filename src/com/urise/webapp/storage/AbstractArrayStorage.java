@@ -13,11 +13,11 @@ public abstract class AbstractArrayStorage {
     protected Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int size = 0;
 
-    public int size() {
+    public final int size() {
         return size;
     }
 
-    public Resume get(String uuid) {
+    public final Resume get(String uuid) {
         int index = getSearchKey(uuid);
         if (index < 0) {
             System.out.println("Resume " + uuid + " not exist");
@@ -26,12 +26,12 @@ public abstract class AbstractArrayStorage {
         return storage[index];
     }
 
-    public void clear() {
+    public final  void clear() {
         Arrays.fill(storage, null);
         size = 0;
     }
 
-    public void update(Resume resume) {
+    public final  void update(Resume resume) {
         int searchKey = getSearchKey(resume.getUuid());
         if (searchKey >= 0) {
             storage[searchKey] = resume;
@@ -42,11 +42,11 @@ public abstract class AbstractArrayStorage {
     }
 
 
-    public Resume[] getAll() {
+    public final Resume[] getAll() {
         return Arrays.copyOf(storage, size);
     }
 
-    public void save(Resume r) {
+    public  final void save(Resume r) {
         int index = getSearchKey(r.getUuid());
         if (storage.length == size) {
             System.out.println("ERROR: Number of resume is more that resume storage");
@@ -58,7 +58,7 @@ public abstract class AbstractArrayStorage {
         }
     }
 
-    public void delete(String uuid) {
+    public final  void delete(String uuid) {
         int searchKey = getSearchKey(uuid);
         if (searchKey < 0) {
             System.out.println("ERROR: Resume is not found");
