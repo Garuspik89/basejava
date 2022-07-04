@@ -53,20 +53,16 @@ public abstract class AbstractArrayStorage {
         } else if ((index >= 0)) {
             System.out.println("ERROR: Resume is found");
         } else {
-            addResumeToList(r,index);
+            addResumeToList(r, index);
             size++;
         }
-
     }
 
     public void delete(String uuid) {
         int searchKey = getSearchKey(uuid);
         if (searchKey < 0) {
             System.out.println("ERROR: Resume is not found");
-            return;
-        }
-        int indexDelete = size - searchKey - 1;
-        if (indexDelete >= 0) {
+        } else {
             removeResumeFromList(searchKey);
             storage[size - 1] = null;
             size--;
