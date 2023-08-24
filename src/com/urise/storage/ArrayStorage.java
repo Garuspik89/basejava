@@ -35,39 +35,39 @@ public class ArrayStorage {
             System.out.println("Sorry, the resume  already exists");
         } else {
             storage[size] = r;
-            size = size + 1;
+            size++;
         }
     }
 
 
     public Resume get(String uuid) {
-        int indexOfResume = findIndex(uuid);
-        if (indexOfResume == -1) {
+        int index = findIndex(uuid);
+        if (index == -1) {
             System.out.println("Sorry, the resume doesn't exist");
             return null;
         } else {
-            return storage[indexOfResume];
+            return storage[index];
         }
     }
 
     public void delete(String uuid) {
-        int placeOfNullItem = findIndex(uuid);
-        if (placeOfNullItem == -1) {
+        int index = findIndex(uuid);
+        if (index == -1) {
             System.out.println("Sorry, the resume doesn't exist");
             return;
         }
-        storage[placeOfNullItem] = storage[size - 1];
+        storage[index] = storage[size - 1];
         storage[size] = null;
-        size = size - 1;
+        size--;
     }
 
     public void update(Resume resume) {
-        int indexOfResume = findIndex(resume.getUuid());
-        if (indexOfResume == -1) {
+        int index = findIndex(resume.getUuid());
+        if (index == -1) {
             System.out.println("Sorry, the resume doesn't exist");
             return;
         }
-        storage[indexOfResume] = resume;
+        storage[index] = resume;
 
 
     }
