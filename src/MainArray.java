@@ -1,4 +1,5 @@
 import com.urise.model.Resume;
+import com.urise.storage.AbstractArrayStorage;
 import com.urise.storage.SortedArrayStorage;
 
 import java.io.BufferedReader;
@@ -10,7 +11,7 @@ import java.io.InputStreamReader;
  * (just run, no need to understand)
  */
 public class MainArray {
-    private final static SortedArrayStorage ARRAY_STORAGE = new SortedArrayStorage();
+    private final static AbstractArrayStorage ARRAY_STORAGE = new SortedArrayStorage();
 
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
