@@ -1,4 +1,8 @@
 package com.urise.storage;
+
+import com.urise.exception.ExistStorageException;
+import com.urise.exception.NotExistStorageException;
+import com.urise.exception.StorageException;
 import com.urise.model.Resume;
 
 import java.util.Arrays;
@@ -9,8 +13,9 @@ public abstract class AbstractArrayStorage implements Storage {
     protected Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int size = 0;
 
-     public final int size() {
-        return size;
+    public final int size() {
+
+         return size;
     }
 
     public final Resume get(String uuid) {
@@ -25,9 +30,9 @@ public abstract class AbstractArrayStorage implements Storage {
     public final void save(Resume resume) {
        int index = getIndex(resume.getUuid());
         if (size == STORAGE_LIMIT) {
-            System.out.println("Sorry, storage is full, the resume can't be added");
+            throw new StorageException("Storage overflow", resume.getUuid());
         } else if (index >= 0) {
-            System.out.println("Sorry, the resume  already exists");
+            throw new ExistStorageException(resume.getUuid());
         } else {
            saveResume(resume,index);
            size++;
@@ -42,8 +47,7 @@ public abstract class AbstractArrayStorage implements Storage {
     public final void delete(String uuid) {
         int index = getIndex(uuid);
         if (index < 0) {
-            System.out.println("Sorry, the resume doesn't exist");
-            return;
+            throw new NotExistStorageException(uuid);
         }
         deleteResume(index);
         storage[size] = null;
@@ -54,13 +58,12 @@ public abstract class AbstractArrayStorage implements Storage {
         return Arrays.copyOf(storage,size);
     }
 
-    public final void update(Resume r){
-        int index = getIndex(r.getUuid());
+    public final void update(Resume resume){
+        int index = getIndex(resume.getUuid());
         if (index < 0) {
-            System.out.println("Sorry, the resume doesn't exist");
-            return;
+            throw new NotExistStorageException(resume.getUuid());
         }
-        storage[index] = r;
+        storage[index] = resume;
     }
     protected abstract int getIndex(String uuid);
     protected abstract void saveResume(Resume resume,int index);
