@@ -54,7 +54,6 @@ public abstract class AbstractArrayStorageTest {
 
     @Test
     public void delete() {
-        Resume resume = storage.get("uuid2");
         storage.delete("uuid2");
         Assert.assertNull(storage.get("uuid2"));
     }
