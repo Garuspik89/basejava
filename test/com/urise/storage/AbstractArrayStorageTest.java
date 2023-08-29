@@ -62,8 +62,9 @@ public abstract class AbstractArrayStorageTest {
         try {
             assertGet(RESUME_1);
         } catch (NotExistStorageException exception) {
-
+            return;
         }
+        Assert.fail();
     }
 
     @Test
