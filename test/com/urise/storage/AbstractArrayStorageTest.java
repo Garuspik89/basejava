@@ -10,11 +10,17 @@ import org.junit.Test;
 
 
 public abstract class AbstractArrayStorageTest {
-    private Storage storage;
-    private final Resume RESUME_1 = new Resume("UUID_1");
-    private final Resume RESUME_2 = new Resume("UUID_2");
-    private final Resume RESUME_3 = new Resume("UUID_3");
-    private final Resume RESUME_4 = new Resume("UUID_4");
+    private final Storage storage;
+    private final String UUID_1 = "UUID_1";
+    private final String UUID_2 = "UUID_2";
+    private final String UUID_3 = "UUID_3";
+    private final String UUID_4 = "UUID_4";
+    private final String DUMMY = "dummy";
+    private final Resume RESUME_1 = new Resume(UUID_1);
+    private final Resume RESUME_2 = new Resume(UUID_2);
+    private final Resume RESUME_3 = new Resume(UUID_3);
+    private final Resume RESUME_4 = new Resume(UUID_4);
+
 
     AbstractArrayStorageTest(Storage typeOfArrayStorage) {
         this.storage = typeOfArrayStorage;
@@ -55,7 +61,7 @@ public abstract class AbstractArrayStorageTest {
         Assert.assertArrayEquals(resumesAfterClear, emptyResumes);
     }
 
-    @Test
+    @Test(expected = NotExistStorageException.class)
     public void delete() {
         storage.delete(RESUME_1.getUuid());
         assertSize(2);
@@ -76,14 +82,14 @@ public abstract class AbstractArrayStorageTest {
 
     @Test
     public void update() {
-        Resume resumeForUpdating = new Resume("UUID_1");
+        Resume resumeForUpdating = new Resume(UUID_1);
         storage.update(resumeForUpdating);
-        Assert.assertEquals(resumeForUpdating, storage.get("UUID_1"));
+        Assert.assertEquals(resumeForUpdating, storage.get(UUID_1));
     }
 
     @Test(expected = NotExistStorageException.class)
     public void getNotExist() {
-        storage.get("dummy");
+        storage.get(DUMMY);
     }
 
     @Test(expected = ExistStorageException.class)
@@ -103,16 +109,14 @@ public abstract class AbstractArrayStorageTest {
     @Test(expected = StorageException.class)
     public void storageOverFlow() {
         storage.clear();
-        int countOfUUID = 0;
         for (int i = 0; i < AbstractArrayStorage.STORAGE_LIMIT; i++) {
             try {
-                storage.save(new Resume("uuid" + countOfUUID));
-                countOfUUID++;
+                storage.save(new Resume("uuid" + i));
             } catch (StorageException exception) {
                 Assert.fail("Sorry, storage is filled before the time");
             }
         }
-        Resume resume = new Resume("uuid" + countOfUUID);
+        Resume resume = new Resume("uuid10000");
         storage.save(resume);
     }
 }
