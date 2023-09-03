@@ -26,7 +26,7 @@ public abstract class AbstractStorageTest {
     private final Resume RESUME_4 = new Resume(UUID_4);
 
     @Before
-    public void setUp()  {
+    public void setUp() {
         storage.clear();
         storage.save(RESUME_1);
         storage.save(RESUME_2);
@@ -44,6 +44,7 @@ public abstract class AbstractStorageTest {
         assertGet(RESUME_2);
         assertGet(RESUME_3);
     }
+
     private void assertGet(Resume resume) {
         Assert.assertEquals(resume, storage.get(resume.getUuid()));
     }
