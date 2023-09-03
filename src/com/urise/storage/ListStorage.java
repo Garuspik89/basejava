@@ -6,56 +6,66 @@ import java.util.ArrayList;
 
 public class ListStorage extends AbstractStorage {
     {
-        arrayListStorage = new ArrayList<Resume>();
+        arrayListStorage = new ArrayList();
     }
 
     @Override
-    protected int getIndexOfCollection(String uuid) {
+    public void clear() {
+        arrayListStorage.clear();
+    }
+
+    @Override
+    public Resume[] getAll() {
+         Resume[] convertedArray = arrayListStorage.toArray(new Resume[arrayListStorage.size()]);
+         return convertedArray;
+    }
+
+    @Override
+    public int size() {
+        return arrayListStorage.size();
+    }
+
+    @Override
+    protected Object getSearchKey(Object searchKey) {
         for (int i = 0; i < arrayListStorage.size(); i++) {
-            if (arrayListStorage.get(i).getUuid().equals(uuid)) {
-                Resume resume = arrayListStorage.get(i);
-                return arrayListStorage.indexOf(resume);
+            if (arrayListStorage.get(i).getUuid().equals((String) searchKey)) {
+                return i;
             }
         }
         return -1;
     }
 
     @Override
-    protected Resume returnResumeFromCollection(int index) {
-        return arrayListStorage.get(index);
+    protected boolean isExist(Object searchKey) {
+        if ((int) searchKey  < 0) {
+            return false;
+        }
+        return true;
     }
 
     @Override
-    protected int returnSizeOfCollection() {
-        return arrayListStorage.size();
+    protected void doDelete(Object searchKey) {
+        arrayListStorage.remove((int) searchKey);
+
     }
 
     @Override
-    protected void saveCollectionResume(Resume resume, int index) {
+    protected void doSave(Resume resume, Object searchKey) {
         arrayListStorage.add(resume);
     }
 
     @Override
-    protected void clearCollection() {
-        arrayListStorage.clear();
+    protected Resume doGet(Object searchKey) {
+       return arrayListStorage.get((int) searchKey);
     }
 
     @Override
-    protected Resume[] getAllCollectionElement() {
-        Resume[] returnedResumes = arrayListStorage.toArray(new Resume[arrayListStorage.size()]);
-        return returnedResumes;
+    protected void doUpdate(Resume resume, Object searchKey) {
+        arrayListStorage.set((int) searchKey, resume);
     }
-
-    @Override
-    protected void deleteCollectionResume(int index, String uuid) {
-        arrayListStorage.remove(index);
-    }
-
-    @Override
-    protected void updateCollectionResume(Resume resume, int index) {
-        arrayListStorage.set(index, resume);
-    }
-
-
 }
+
+
+
+
 

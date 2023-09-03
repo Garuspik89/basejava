@@ -45,10 +45,6 @@ public abstract class AbstractStorageTest {
         assertGet(RESUME_3);
     }
 
-    private void assertGet(Resume resume) {
-        Assert.assertEquals(resume, storage.get(resume.getUuid()));
-    }
-
     @Test
     public void save() {
         storage.save(RESUME_4);
@@ -92,9 +88,6 @@ public abstract class AbstractStorageTest {
         Assert.fail();
     }
 
-    private void assertSize(int size) {
-        Assert.assertEquals(size, storage.size());
-    }
 
     @Test(expected = NotExistStorageException.class)
     public void getNotExist() {
@@ -106,4 +99,11 @@ public abstract class AbstractStorageTest {
         storage.save(RESUME_1);
     }
 
+    private void assertGet(Resume resume) {
+        Assert.assertEquals(resume, storage.get(resume.getUuid()));
+    }
+
+    private void assertSize(int size) {
+        Assert.assertEquals(size, storage.size());
+    }
 }

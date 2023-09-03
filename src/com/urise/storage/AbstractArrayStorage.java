@@ -14,60 +14,62 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
 
-    @Override
-    protected Resume returnResumeFromCollection(int index) {
-        return storage[index];
+    public final int size() {
+        return size;
     }
 
-    @Override
-    protected void saveCollectionResume(Resume resume, int index) {
-        if (size == STORAGE_LIMIT) {
-            throw new StorageException("Storage overflow", resume.getUuid());
-        } else {
-            saveResume(resume, index);
-            size++;
-        }
-    }
-
-    @Override
-    protected void clearCollection() {
+    public final void clear() {
         Arrays.fill(storage, 0, size, null);
         size = 0;
     }
 
-    @Override
-    protected Resume[] getAllCollectionElement() {
+    public final Resume[] getAll() {
         return Arrays.copyOf(storage, size);
     }
 
     @Override
-    protected void deleteCollectionResume(int index, String uuid) {
-        deleteResume(index);
+    protected void doSave(Resume resume, Object searchKey) {
+        if (size == STORAGE_LIMIT) {
+            throw new StorageException("Storage overflow", resume.getUuid());
+        }
+        saveResume(resume, (int) searchKey);
+        size++;
+    }
+
+    @Override
+    protected void doDelete(Object searchKey) {
+        deleteResume((int) searchKey);
         storage[size] = null;
         size--;
     }
 
     @Override
-    protected int returnSizeOfCollection() {
-        return size;
+    protected void doUpdate(Resume resume, Object searchKey) {
+        storage[(int) searchKey] = resume;
     }
 
     @Override
-    protected void updateCollectionResume(Resume resume, int index) {
-        storage[index] = resume;
+    protected Resume doGet(Object searchKey) {
+        return storage[(int) searchKey];
     }
 
     @Override
-    protected int getIndexOfCollection(String uuid) {
-        return getIndex(uuid);
+    protected Object getSearchKey(Object searchKey) {
+        return getIndex((String) searchKey);
     }
 
+    @Override
+    protected boolean isExist(Object searchKey) {
+        if ((int) searchKey < 0) {
+            return false;
+        }
+        return true;
+    }
 
-    protected abstract int getIndex(String uuid);
+    abstract protected int getIndex(String uuid);
 
-    protected abstract void deleteResume(int index);
+    abstract protected void saveResume(Resume resume, int index);
 
-    protected abstract void saveResume(Resume resume, int index);
-
+    abstract protected void deleteResume(int index);
 }
 

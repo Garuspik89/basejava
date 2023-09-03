@@ -6,67 +6,60 @@ import com.urise.model.Resume;
 
 import java.util.ArrayList;
 
+
 public abstract class AbstractStorage implements Storage {
     protected Resume[] storage;
     protected ArrayList<Resume> arrayListStorage;
 
-    public final int size() {
-        return returnSizeOfCollection();
+
+    public final void save(Resume resume) throws ExistStorageException {
+        Object searchKey = getExistingSearchKey(resume.getUuid());
+        doSave(resume, searchKey);
     }
 
     public final Resume get(String uuid) throws NotExistStorageException {
-        int index = getIndexOfCollection(uuid);
-        if (index < 0) {
-            throw new NotExistStorageException(uuid);
-        }
-        return returnResumeFromCollection(index);
-    }
+        Object searchKey = getNotExistingSearchKey(uuid);
+        return doGet(searchKey);
 
-    public final void save(Resume resume) throws ExistStorageException {
-        int index = getIndexOfCollection(resume.getUuid());
-        if (index >= 0) {
-            throw new ExistStorageException(resume.getUuid());
-        }
-        saveCollectionResume(resume, index);
-    }
-
-    public final void clear() {
-        clearCollection();
-    }
-
-    public final Resume[] getAll() {
-        return getAllCollectionElement();
     }
 
     public final void delete(String uuid) throws NotExistStorageException {
-        int index = getIndexOfCollection(uuid);
-        if (index < 0) {
-            throw new NotExistStorageException(uuid);
-        }
-        deleteCollectionResume(index, uuid);
+        Object searchKey = getNotExistingSearchKey(uuid);
+        doDelete(searchKey);
     }
 
     public final void update(Resume resume) throws NotExistStorageException {
-        int index = getIndexOfCollection(resume.getUuid());
-        if (index < 0) {
-            throw new NotExistStorageException(resume.getUuid());
-        }
-        updateCollectionResume(resume, index);
+        Object searchKey = getNotExistingSearchKey(resume.getUuid());
+        doUpdate(resume, searchKey);
     }
 
-    protected abstract int getIndexOfCollection(String uuid);
 
-    protected abstract Resume returnResumeFromCollection(int index);
+    private Object getExistingSearchKey(String uuid) {
+        Object searchingKey = getSearchKey(uuid);
+        if (isExist(searchingKey)) {
+            throw new ExistStorageException(uuid);
+        }
+        return searchingKey;
+    }
 
-    protected abstract int returnSizeOfCollection();
+    private Object getNotExistingSearchKey(String uuid) {
+        Object searchingKey = getSearchKey(uuid);
+        if (!isExist(searchingKey)) {
+            throw new NotExistStorageException(uuid);
+        }
+        return searchingKey;
+    }
 
-    protected abstract void saveCollectionResume(Resume resume, int index);
+    protected abstract Object getSearchKey(Object searchKey);
 
-    protected abstract void clearCollection();
+    protected abstract boolean isExist(Object searchKey);
 
-    protected abstract Resume[] getAllCollectionElement();
+    protected abstract void doDelete(Object searchKey);
 
-    protected abstract void deleteCollectionResume(int index, String uuid);
+    protected abstract void doSave(Resume resume, Object searchKey);
 
-    protected abstract void updateCollectionResume(Resume resume, int index);
+    protected abstract Resume doGet(Object searchKey);
+
+    protected abstract void doUpdate(Resume resume, Object searchKey);
+
 }
