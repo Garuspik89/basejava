@@ -5,9 +5,7 @@ import com.urise.model.Resume;
 import java.util.ArrayList;
 
 public class ListStorage extends AbstractStorage {
-    {
-        arrayListStorage = new ArrayList();
-    }
+    protected ArrayList<Resume> arrayListStorage = new ArrayList<Resume>();
 
     @Override
     public void clear() {
@@ -16,8 +14,7 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     public Resume[] getAll() {
-         Resume[] convertedArray = arrayListStorage.toArray(new Resume[arrayListStorage.size()]);
-         return convertedArray;
+        return arrayListStorage.toArray(new Resume[arrayListStorage.size()]);
     }
 
     @Override
@@ -28,7 +25,7 @@ public class ListStorage extends AbstractStorage {
     @Override
     protected Object getSearchKey(Object searchKey) {
         for (int i = 0; i < arrayListStorage.size(); i++) {
-            if (arrayListStorage.get(i).getUuid().equals((String) searchKey)) {
+            if (arrayListStorage.get(i).getUuid().equals(searchKey)) {
                 return i;
             }
         }
@@ -37,10 +34,10 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     protected boolean isExist(Object searchKey) {
-        if ((int) searchKey  < 0) {
-            return false;
+        if ((int) searchKey >= 0) {
+            return true;
         }
-        return true;
+        return false;
     }
 
     @Override

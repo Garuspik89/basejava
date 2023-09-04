@@ -4,13 +4,8 @@ import com.urise.exception.ExistStorageException;
 import com.urise.exception.NotExistStorageException;
 import com.urise.model.Resume;
 
-import java.util.ArrayList;
-
 
 public abstract class AbstractStorage implements Storage {
-    protected Resume[] storage;
-    protected ArrayList<Resume> arrayListStorage;
-
 
     public final void save(Resume resume) throws ExistStorageException {
         Object searchKey = getExistingSearchKey(resume.getUuid());
