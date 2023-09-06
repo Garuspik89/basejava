@@ -14,7 +14,7 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     public Resume[] getAll() {
-        return arrayListStorage.toArray(new Resume[arrayListStorage.size()]);
+        return arrayListStorage.toArray(new Resume[0]);
     }
 
     @Override
@@ -34,10 +34,7 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     protected boolean isExist(Object searchKey) {
-        if ((int) searchKey >= 0) {
-            return true;
-        }
-        return false;
+       return ((int) searchKey >= 0);
     }
 
     @Override
