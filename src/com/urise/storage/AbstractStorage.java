@@ -18,6 +18,12 @@ public abstract class AbstractStorage implements Storage {
 
     }
 
+    public final Resume getByFullName(String fullName) throws NotExistStorageException {
+        Object searchKey = getNotExistingSearchKey(fullName);
+        return doGet(searchKey);
+
+    }
+
     public final void delete(String uuid) throws NotExistStorageException {
         Object searchKey = getNotExistingSearchKey(uuid);
         doDelete(searchKey);

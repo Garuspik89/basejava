@@ -20,10 +20,10 @@ public abstract class AbstractStorageTest {
     private final String UUID_3 = "UUID_3";
     private final String UUID_4 = "UUID_4";
     private final String DUMMY = "dummy";
-    private final Resume RESUME_1 = new Resume(UUID_1);
-    private final Resume RESUME_2 = new Resume(UUID_2);
-    private final Resume RESUME_3 = new Resume(UUID_3);
-    private final Resume RESUME_4 = new Resume(UUID_4);
+    private final Resume RESUME_1 = new Resume(UUID_1,"Максим");
+    private final Resume RESUME_2 = new Resume(UUID_2, "Татьяна");
+    private final Resume RESUME_3 = new Resume(UUID_3, "Егор");
+    private final Resume RESUME_4 = new Resume(UUID_4, "Станислав");
 
     @Before
     public void setUp() {
@@ -55,7 +55,7 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void update() {
-        Resume resumeForUpdating = new Resume(UUID_1);
+        Resume resumeForUpdating = new Resume(UUID_1, "Геннадий");
         storage.update(resumeForUpdating);
         Assert.assertEquals(resumeForUpdating, storage.get(UUID_1));
     }
@@ -64,15 +64,15 @@ public abstract class AbstractStorageTest {
     public void clear() {
         storage.clear();
         assertSize(0);
-        Resume[] resumesAfterClear = storage.getAll();
+        Resume[] resumesAfterClear = storage.getAllSorted().toArray(new Resume[0]);
         Resume[] emptyResumes = new Resume[0];
         Assert.assertArrayEquals(resumesAfterClear, emptyResumes);
     }
 
     @Test
     public void getAll() {
-        Resume[] actual = storage.getAll();
-        Resume[] model = new Resume[]{RESUME_1, RESUME_2, RESUME_3};
+        Resume[] actual = storage.getAllSorted().toArray(new Resume[0]);
+        Resume[] model = new Resume[]{RESUME_3, RESUME_1, RESUME_2};
         Assert.assertArrayEquals(actual, model);
     }
 

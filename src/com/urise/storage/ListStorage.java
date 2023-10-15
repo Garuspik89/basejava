@@ -3,6 +3,8 @@ package com.urise.storage;
 import com.urise.model.Resume;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class ListStorage extends AbstractStorage {
     protected ArrayList<Resume> arrayListStorage = new ArrayList<Resume>();
@@ -13,8 +15,9 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    public Resume[] getAll() {
-        return arrayListStorage.toArray(new Resume[0]);
+    public List<Resume> getAllSorted() {
+      arrayListStorage.sort(Comparator.comparing(Resume::getFullName).thenComparing(Resume::getUuid));
+      return arrayListStorage;
     }
 
     @Override

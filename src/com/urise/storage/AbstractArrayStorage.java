@@ -3,7 +3,7 @@ package com.urise.storage;
 import com.urise.exception.StorageException;
 import com.urise.model.Resume;
 
-import java.util.Arrays;
+import java.util.*;
 
 public abstract class AbstractArrayStorage extends AbstractStorage {
     protected static final int STORAGE_LIMIT = 10000;
@@ -18,9 +18,11 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         Arrays.fill(storage, 0, size, null);
         size = 0;
     }
-
-    public final Resume[] getAll() {
-        return Arrays.copyOf(storage, size);
+    @Override
+    public final List<Resume> getAllSorted() {
+        List<Resume> newStorage = Arrays.asList(Arrays.copyOfRange(storage,0,size));
+        newStorage.sort(Comparator.comparing(Resume::getFullName).thenComparing(Resume::getUuid));
+      return newStorage;
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.urise.storage.MapStorage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 
 /**
  * Interactive test for com.urise.storage.ArrayStorage implementation
@@ -17,14 +18,18 @@ public class MainArray {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         Resume r;
         while (true) {
-            System.out.print("Введите одну из команд - (list | size | save uuid | update uuid | delete uuid | get uuid | clear | exit): ");
+            System.out.print("Введите одну из команд - (list | size | save uuid fullName | update uuid fullName |  getbyname uuid fullName | delete uuid fullName  | get uuid fullName  | clear | exit): ");
             String[] params = reader.readLine().trim().toLowerCase().split(" ");
-            if (params.length < 1 || params.length > 2) {
+            if (params.length < 1 || params.length > 3) {
                 System.out.println("Неверная команда.");
                 continue;
             }
             String uuid = null;
-            if (params.length == 2) {
+            String fullName = null;
+            if (params.length == 3) {
+                uuid = params[1].intern();
+                fullName = params[2].intern();
+            } else if (params.length == 2) {
                 uuid = params[1].intern();
             }
             switch (params[0]) {
@@ -37,6 +42,7 @@ public class MainArray {
                 case "save":
                     r = new Resume();
                     r.setUuid(uuid);
+                    r.setFullName(fullName);
                     ARRAY_STORAGE.save(r);
                     printAll();
                     break;
@@ -46,6 +52,9 @@ public class MainArray {
                     break;
                 case "get":
                     System.out.println(ARRAY_STORAGE.get(uuid));
+                    break;
+                case "getbyname":
+                    System.out.println(ARRAY_STORAGE.get(fullName));
                     break;
                 case "clear":
                     ARRAY_STORAGE.clear();
@@ -61,9 +70,9 @@ public class MainArray {
     }
 
     static void printAll() {
-        Resume[] all = ARRAY_STORAGE.getAll();
+        List<Resume> all = ARRAY_STORAGE.getAllSorted();
         System.out.println("----------------------------");
-        if (all.length == 0) {
+        if (all.size() == 0) {
             System.out.println("Empty");
         } else {
             for (Resume r : all) {
