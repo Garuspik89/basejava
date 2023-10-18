@@ -2,21 +2,22 @@ package com.urise.storage;
 
 import com.urise.model.Resume;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MapStorageResume  extends AbstractStorage {
-    private Map<String, Resume> map = new HashMap<>();
+public class MapStorageResume extends AbstractStorage {
+    private final Map<String, Resume> MAP = new HashMap<>();
 
     @Override
     protected void doUpdate(Resume r, Object resume) {
-        map.put(r.getUuid(), r);
+        MAP.put(r.getUuid(), r);
     }
 
     @Override
     protected Resume getSearchKey(Object searchKey) {
-        return map.get((String)searchKey);
+        return MAP.get((String) searchKey);
     }
 
     @Override
@@ -26,7 +27,7 @@ public class MapStorageResume  extends AbstractStorage {
 
     @Override
     protected void doSave(Resume r, Object resume) {
-        map.put(r.getUuid(), r);
+        MAP.put(r.getUuid(), r);
     }
 
     @Override
@@ -36,21 +37,21 @@ public class MapStorageResume  extends AbstractStorage {
 
     @Override
     protected void doDelete(Object resume) {
-        map.remove(((Resume) resume).getUuid());
+        MAP.remove(((Resume) resume).getUuid());
     }
 
     @Override
     public void clear() {
-        map.clear();
+        MAP.clear();
     }
 
     @Override
-    public List<Resume> getAllSorted() {
-        return null;
+    protected List<Resume> doGetList() {
+        return new ArrayList<>(MAP.values());
     }
 
     @Override
     public int size() {
-        return map.size();
+        return MAP.size();
     }
 }
