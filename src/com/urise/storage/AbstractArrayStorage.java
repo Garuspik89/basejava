@@ -5,7 +5,7 @@ import com.urise.model.Resume;
 
 import java.util.*;
 
-public abstract class AbstractArrayStorage extends AbstractStorage {
+public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     protected static final int STORAGE_LIMIT = 10000;
     protected int size = 0;
     protected Resume[] storage = new Resume[STORAGE_LIMIT];
@@ -18,45 +18,46 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         Arrays.fill(storage, 0, size, null);
         size = 0;
     }
+
     @Override
-    protected List<Resume> doGetList(){
-        return Arrays.asList(Arrays.copyOfRange(storage,0,size));
+    protected List<Resume> doGetList() {
+        return Arrays.asList(Arrays.copyOfRange(storage, 0, size));
     }
 
     @Override
-    protected void doSave(Resume resume, Object searchKey) {
+    protected void doSave(Resume resume, Integer searchKey) {
         if (size == STORAGE_LIMIT) {
             throw new StorageException("Storage overflow", resume.getUuid());
         }
-        saveResume(resume, (int) searchKey);
+        saveResume(resume, searchKey);
         size++;
     }
 
     @Override
-    protected void doDelete(Object searchKey) {
-        deleteResume((int) searchKey);
+    protected void doDelete(Integer searchKey) {
+        deleteResume(searchKey);
         storage[size] = null;
         size--;
     }
 
     @Override
-    protected void doUpdate(Resume resume, Object searchKey) {
-        storage[(int) searchKey] = resume;
+    protected void doUpdate(Resume resume, Integer searchKey) {
+        storage[searchKey] = resume;
     }
 
     @Override
-    protected Resume doGet(Object searchKey) {
-        return storage[(int) searchKey];
+    protected Resume doGet(Integer searchKey) {
+        return storage[searchKey];
     }
 
     @Override
-    protected Object getSearchKey(Object searchKey) {
-        return getIndex((String) searchKey);
+    protected Integer getSearchKey(String searchKey) {
+        return getIndex(searchKey);
     }
 
     @Override
-    protected boolean isExist(Object searchKey) {
-        if ((int) searchKey < 0) {
+    protected boolean isExist(Integer searchKey) {
+        if (searchKey < 0) {
             return false;
         }
         return true;

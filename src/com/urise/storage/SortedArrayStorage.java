@@ -17,7 +17,7 @@ public class SortedArrayStorage extends AbstractArrayStorage {
     @Override
     protected void saveResume(Resume resume, int index) {
         int reverseIndex = -(index) - 1;
-        Resume tempArray[] = Arrays.copyOfRange(storage, reverseIndex, size);
+        Resume[] tempArray = Arrays.copyOfRange(storage, reverseIndex, size);
         storage[reverseIndex] = resume;
         System.arraycopy(tempArray, 0, storage, reverseIndex + 1, tempArray.length);
 
@@ -25,7 +25,7 @@ public class SortedArrayStorage extends AbstractArrayStorage {
 
     @Override
     protected void deleteResume(int index) {
-        Resume tempArray[] = Arrays.copyOfRange(storage, index + 1, size);
+        Resume[] tempArray = Arrays.copyOfRange(storage, index + 1, size);
         System.arraycopy(tempArray, 0, storage, index, tempArray.length);
     }
 }
