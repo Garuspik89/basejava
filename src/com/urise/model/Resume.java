@@ -13,8 +13,8 @@ public class Resume implements Comparable<Resume> {
     private String uuid;
     private String fullName;
 
-    private  Map<ContactEnum, String> contacts = new EnumMap<>(ContactEnum.class);
-    private  Map<SectionEnum, Sections> sections = new EnumMap<>(SectionEnum.class);
+    private  Map<ContactType, String> contacts = new EnumMap<>(ContactType.class);
+    private  Map<SectionType, Section> sections = new EnumMap<>(SectionType.class);
 
     public Resume() {
 
@@ -42,11 +42,11 @@ public class Resume implements Comparable<Resume> {
 
     public String getFullName() { return this.fullName; }
 
-    public String getContacts(ContactEnum contactEnum) {
+    public String getContacts(ContactType contactEnum) {
         return contacts.get(contactEnum);
     }
 
-    public Sections getSections(SectionEnum sectionEnum) {
+    public Section getSections(SectionType sectionEnum) {
         return sections.get(sectionEnum);
     }
 
