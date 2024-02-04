@@ -1,11 +1,15 @@
 package com.urise.model;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class CompanySection extends Section {
-    List<Company> data = new ArrayList<>();
+
+    private List<Company> data;
+
+    public void setData(List<Company> data) {
+        this.data = data;
+    }
 
     public CompanySection(List<Company> data) {
         this.data = data;

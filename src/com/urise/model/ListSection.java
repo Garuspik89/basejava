@@ -1,11 +1,10 @@
 package com.urise.model;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class ListSection extends Section {
-    private List<String> data = new ArrayList<>();
+    private List<String> data;
 
     public ListSection(List<String> data) {
         this.data = data;

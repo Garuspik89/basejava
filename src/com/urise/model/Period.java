@@ -19,6 +19,38 @@ public class Period {
                 '}';
     }
 
+    public void setFirstDate(LocalDate firstDate) {
+        this.firstDate = firstDate;
+    }
+
+    public void setSecondDate(LocalDate secondDate) {
+        this.secondDate = secondDate;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public LocalDate getFirstDate() {
+        return firstDate;
+    }
+
+    public LocalDate getSecondDate() {
+        return secondDate;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -9,6 +9,30 @@ public class Company {
     private String webSite;
     private List<Period> periodList;
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setWebSite(String webSite) {
+        this.webSite = webSite;
+    }
+
+    public void setPeriodList(List<Period> periodList) {
+        this.periodList = periodList;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getWebSite() {
+        return webSite;
+    }
+
+    public List<Period> getPeriodList() {
+        return periodList;
+    }
+
     @Override
     public String toString() {
         return "Company{" +

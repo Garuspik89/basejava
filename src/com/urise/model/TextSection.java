@@ -9,6 +9,10 @@ public class TextSection extends Section {
         this.data = data;
     }
 
+    public void setData(String data) {
+        this.data = data;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
