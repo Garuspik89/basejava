@@ -1,5 +1,6 @@
 package com.urise.model;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -8,6 +9,10 @@ public class ListSection extends Section {
 
     public ListSection(List<String> data) {
         this.data = data;
+    }
+
+    public ListSection(String...someText){
+        this(Arrays.asList(someText));
     }
 
     @Override

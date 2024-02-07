@@ -7,6 +7,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+
 public abstract class AbstractStorageTest {
 
     protected final Storage storage;
@@ -15,15 +16,32 @@ public abstract class AbstractStorageTest {
         this.storage = typeOfArrayStorage;
     }
 
-    private final String UUID_1 = "UUID_1";
-    private final String UUID_2 = "UUID_2";
-    private final String UUID_3 = "UUID_3";
-    private final String UUID_4 = "UUID_4";
+    private static final String UUID_1 = "UUID_1";
+    private static final String UUID_2 = "UUID_2";
+    private static final String UUID_3 = "UUID_3";
+    private static final String UUID_4 = "UUID_4";
     private final String DUMMY = "dummy";
-    private final Resume RESUME_1 = new Resume(UUID_1,"Максим");
-    private final Resume RESUME_2 = new Resume(UUID_2, "Татьяна");
-    private final Resume RESUME_3 = new Resume(UUID_3, "Егор");
-    private final Resume RESUME_4 = new Resume(UUID_4, "Станислав");
+    private static final Resume RESUME_1 = new Resume(UUID_1,"Петров Иван Сергеевич");
+    private static final Resume RESUME_2 = new Resume(UUID_2, "Горская Татьяна Алексеевна");
+    private static final Resume RESUME_3 = new Resume(UUID_3, "Раков Егор Максимович");
+    private static final Resume RESUME_4 = new Resume(UUID_4, "Хомич Станислав Анатольевич");
+
+    public static Resume getRESUME_1() {
+        return RESUME_1;
+    }
+
+    public static Resume getRESUME_2() {
+        return RESUME_2;
+    }
+
+    public static Resume getRESUME_3() {
+        return RESUME_3;
+    }
+
+    public static Resume getRESUME_4() {
+        return RESUME_4;
+    }
+
 
     @Before
     public void setUp() {
@@ -72,7 +90,7 @@ public abstract class AbstractStorageTest {
     @Test
     public void getAll() {
         Resume[] actual = storage.getAllSorted().toArray(new Resume[0]);
-        Resume[] model = new Resume[]{RESUME_3, RESUME_1, RESUME_2};
+        Resume[] model = new Resume[]{RESUME_2, RESUME_1, RESUME_3};
         Assert.assertArrayEquals(actual, model);
     }
 
@@ -87,7 +105,6 @@ public abstract class AbstractStorageTest {
         }
         Assert.fail();
     }
-
 
     @Test(expected = NotExistStorageException.class)
     public void getNotExist() {

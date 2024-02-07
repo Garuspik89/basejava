@@ -1,5 +1,6 @@
 package com.urise.model;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,6 +14,10 @@ public class CompanySection extends Section {
 
     public CompanySection(List<Company> data) {
         this.data = data;
+    }
+
+    public CompanySection(Company...companies) {
+        this(Arrays.asList(companies));
     }
 
     public List<Company> getData() {
