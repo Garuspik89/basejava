@@ -51,8 +51,8 @@ public abstract class AbstractStorage<E> implements Storage {
 
     @Override
     public List<Resume> getAllSorted() {
-        List<Resume> sortedList = doGetList();
-        Collections.sort(sortedList, COMPARATOR);
+        List<Resume> sortedList = doGetAll();
+        sortedList.sort(COMPARATOR);
         return sortedList;
     }
 
@@ -68,6 +68,6 @@ public abstract class AbstractStorage<E> implements Storage {
 
     protected abstract void doUpdate(Resume resume, E searchKey);
 
-    protected abstract List<Resume> doGetList();
+    protected abstract List<Resume> doGetAll();
 
 }

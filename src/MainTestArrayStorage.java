@@ -1,11 +1,11 @@
 import com.urise.model.Resume;
-import com.urise.storage.ArrayStorage;
+import com.urise.storage.SortedArrayStorage;
 
 /**
  * Test for your com.urise.storage.ArrayStorage implementation
  */
 public class MainTestArrayStorage {
-    static final ArrayStorage ARRAY_STORAGE = new ArrayStorage();
+    static final SortedArrayStorage ARRAY_STORAGE = new SortedArrayStorage();
 
     public static void main(String[] args) {
         Resume r1 = new Resume();

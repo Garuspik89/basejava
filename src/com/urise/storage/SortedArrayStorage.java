@@ -9,9 +9,9 @@ public class SortedArrayStorage extends AbstractArrayStorage {
 
     @Override
     protected int getIndex(String uuid) {
-        Resume resumeForSearching = new Resume();
-        resumeForSearching.setUuid(uuid);
-        return Arrays.binarySearch(storage, 0, size, resumeForSearching);
+        Resume searchKey = new Resume();
+        searchKey.setUuid(uuid);
+        return Arrays.binarySearch(storage, 0, size, searchKey);
     }
 
     @Override
@@ -25,7 +25,6 @@ public class SortedArrayStorage extends AbstractArrayStorage {
 
     @Override
     protected void deleteResume(int index) {
-        Resume[] tempArray = Arrays.copyOfRange(storage, index + 1, size);
-        System.arraycopy(tempArray, 0, storage, index, tempArray.length);
+        System.arraycopy(storage, index + 1, storage, index, size - index);
     }
 }

@@ -20,7 +20,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     }
 
     @Override
-    protected List<Resume> doGetList() {
+    protected List<Resume> doGetAll() {
         return Arrays.asList(Arrays.copyOfRange(storage, 0, size));
     }
 
@@ -57,10 +57,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
 
     @Override
     protected boolean isExist(Integer searchKey) {
-        if (searchKey < 0) {
-            return false;
-        }
-        return true;
+        return searchKey >= 0;
     }
 
     abstract protected int getIndex(String uuid);

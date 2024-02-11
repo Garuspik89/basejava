@@ -26,9 +26,12 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
     @Override
     public void clear() {
-        File[] root = directory.listFiles();
+        File[] files = directory.listFiles();
+        if (files == null) {
+            throw new StorageException("Can't clear files, because directory isn't exist", directory.getName());
+        }
+        for (File file : files) {
 
-        for (File file : root) {
             doDelete(file);
         }
     }
@@ -37,6 +40,9 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     public int size() {
 
         File[] files = directory.listFiles();
+        if (files == null) {
+            throw new StorageException("Can't count number of files, because directory isn't exist", directory.getName());
+        }
         return files.length;
     }
 
@@ -87,8 +93,11 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     }
 
     @Override
-    protected List<Resume> doGetList() {
+    protected List<Resume> doGetAll() {
         File[] files = directory.listFiles();
+        if (files == null) {
+            throw new StorageException("Can't get list of files, because directory isn't exist", directory.getName());
+        }
         List<Resume> list = new ArrayList<>(files.length);
         for (File file : files) {
             list.add(doGet(file));
@@ -101,17 +110,4 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
     public abstract Resume doRead(File file) throws IOException;
 
-    public static void showAllFileInDirectory(File directory) {
-        File[] root = directory.listFiles();
-
-        if (root != null) {
-            for (File next : root) {
-                if (next.isFile()) {
-                    System.out.println("Next file is : " + next.getName());
-                } else if (next.isDirectory()) {
-                    showAllFileInDirectory(next);
-                }
-            }
-        }
-    }
 }
