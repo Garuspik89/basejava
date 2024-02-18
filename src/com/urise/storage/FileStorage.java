@@ -1,51 +1,28 @@
 package com.urise.storage;
 
-
 import com.urise.exception.StorageException;
 import com.urise.model.Resume;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-public abstract class AbstractFileStorage extends AbstractStorage<File> {
+public class FileStorage extends AbstractStorage<File> {
     private final File directory;
+    private final Converter converterOfFiles;
 
-    protected AbstractFileStorage(File directory) {
-        Objects.requireNonNull(directory, "directory must not be null");
+    protected FileStorage(File directory, Converter converterOfFiles) {
+
+
+        this.converterOfFiles = converterOfFiles;
         if (!directory.isDirectory()) {
             throw new IllegalArgumentException(directory.getAbsolutePath() + " is not directory");
         }
         if (!directory.canRead() || !directory.canWrite()) {
-            throw new IllegalArgumentException(directory.getAbsolutePath() + " is not readable/writable");
+            throw new IllegalArgumentException(directory.getAbsolutePath() + " can't do");
         }
         this.directory = directory;
     }
-
-    @Override
-    public void clear() {
-        File[] files = directory.listFiles();
-        if (files == null) {
-            throw new StorageException("Can't clear files, because directory isn't exist", directory.getName());
-        }
-        for (File file : files) {
-
-            doDelete(file);
-        }
-    }
-
-    @Override
-    public int size() {
-
-        File[] files = directory.listFiles();
-        if (files == null) {
-            throw new StorageException("Can't count number of files, because directory isn't exist", directory.getName());
-        }
-        return files.length;
-    }
-
 
     @Override
     protected File getSearchKey(String searchKey) {
@@ -58,17 +35,17 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     }
 
     @Override
-    protected void doDelete(File searchKey) {
-        if (!searchKey.delete()) {
-            throw new StorageException("Couldn't delete resume", searchKey.getName());
+    protected void doDelete(File file) {
+        if (!file.delete()) {
+            throw new StorageException("Couldn't delete resume", file.getName());
         }
+
     }
 
     @Override
     protected void doSave(Resume resume, File file) {
         try {
-            file.createNewFile();
-            doWrite(resume, file);
+            converterOfFiles.doWrite(resume, new BufferedOutputStream(new FileOutputStream(file)));
         } catch (IOException e) {
             throw new StorageException("IO error", file.getName());
         }
@@ -77,7 +54,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     protected Resume doGet(File file) {
         try {
-            return doRead(file);
+            return converterOfFiles.doRead(new BufferedInputStream((new FileInputStream(file))));
         } catch (IOException e) {
             throw new StorageException("Couldn't read resume", file.getName());
         }
@@ -86,17 +63,18 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     protected void doUpdate(Resume resume, File file) {
         try {
-            doWrite(resume, file);
+            converterOfFiles.doWrite(resume, new BufferedOutputStream(new FileOutputStream(file)));
         } catch (IOException e) {
             throw new StorageException("IO error", file.getName());
         }
+
     }
 
     @Override
     protected List<Resume> doGetAll() {
         File[] files = directory.listFiles();
         if (files == null) {
-            throw new StorageException("Can't get list of files, because directory isn't exist", directory.getName());
+            throw new StorageException("Directory read error", directory.getName());
         }
         List<Resume> list = new ArrayList<>(files.length);
         for (File file : files) {
@@ -105,9 +83,25 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         return list;
     }
 
+    @Override
+    public void clear() {
+        File[] files = directory.listFiles();
+        if (files == null) {
+            throw new StorageException("Can't clear files, because directory isn't exist", directory.getName());
+        }
+        for (File file : files) {
 
-    public abstract void doWrite(Resume resume, File file) throws IOException;
+            doDelete(file);
+        }
 
-    public abstract Resume doRead(File file) throws IOException;
+    }
 
+    @Override
+    public int size() {
+        File[] files = directory.listFiles();
+        if (files == null) {
+            throw new StorageException("Can't count number of files, because directory isn't exist", directory.getName());
+        }
+        return files.length;
+    }
 }

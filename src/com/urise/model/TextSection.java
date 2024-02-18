@@ -1,8 +1,9 @@
 package com.urise.model;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class TextSection extends Section {
+public class TextSection extends Section implements Serializable {
     private String data;
 
     public TextSection(String data){

@@ -2,13 +2,14 @@ package com.urise.model;
 
 import com.urise.util.DateUtil;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class Company {
+public class Company implements Serializable {
     private String name;
     private String webSite;
     private List<Period> periodList;
@@ -69,7 +70,7 @@ public class Company {
         return Objects.hash(name, webSite, periodList);
     }
 
-    public static class Period {
+    public static class Period implements Serializable{
         private LocalDate firstDate;
         private LocalDate secondDate;
         private String title;

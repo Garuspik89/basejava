@@ -1,10 +1,11 @@
 package com.urise.model;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class CompanySection extends Section {
+public class CompanySection extends Section implements Serializable {
 
     private List<Company> data;
 
