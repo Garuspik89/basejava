@@ -20,8 +20,9 @@ public class Company implements Serializable {
         this.webSite = webSite;
         this.periodList = periodList;
     }
-    public Company(String name,String webSite, Period...periods) {
-        this(name,webSite, Arrays.asList(periods));
+
+    public Company(String name, String webSite, Period... periods) {
+        this(name, webSite, Arrays.asList(periods));
     }
 
     public void setName(String name) {
@@ -70,7 +71,7 @@ public class Company implements Serializable {
         return Objects.hash(name, webSite, periodList);
     }
 
-    public static class Period implements Serializable{
+    public static class Period implements Serializable {
         private LocalDate firstDate;
         private LocalDate secondDate;
         private String title;

@@ -11,7 +11,7 @@ public class MainFile {
                 if (next.isFile()) {
                     System.out.println(space + "Next file is : " + next.getName());
                 } else if (next.isDirectory()) {
-                    System.out.println(space+ "The current directory is " + next.getName());
+                    System.out.println(space + "The current directory is " + next.getName());
                     showAllFileInDirectory(next, space + "  ");
                 }
             }

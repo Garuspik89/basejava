@@ -6,7 +6,7 @@ import java.util.Objects;
 public class TextSection extends Section implements Serializable {
     private String data;
 
-    public TextSection(String data){
+    public TextSection(String data) {
         this.data = data;
     }
 
@@ -34,7 +34,7 @@ public class TextSection extends Section implements Serializable {
                 '}';
     }
 
-    public String getData(){
+    public String getData() {
         return data;
     }
 }

@@ -17,7 +17,7 @@ public class CompanySection extends Section implements Serializable {
         this.data = data;
     }
 
-    public CompanySection(Company...companies) {
+    public CompanySection(Company... companies) {
         this(Arrays.asList(companies));
     }
 

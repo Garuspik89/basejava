@@ -12,7 +12,7 @@ public class ListSection extends Section implements Serializable {
         this.data = data;
     }
 
-    public ListSection(String...someText){
+    public ListSection(String... someText) {
         this(Arrays.asList(someText));
     }
 
@@ -32,6 +32,7 @@ public class ListSection extends Section implements Serializable {
     public List<String> getData() {
         return data;
     }
+
     @Override
     public String toString() {
         return data.toString();

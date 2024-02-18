@@ -6,15 +6,15 @@ import org.junit.Test;
 
 import java.time.Month;
 
-public  class ResumeTestData {
+public class ResumeTestData {
 
-        private static final Resume resume1 = AbstractStorageTest.getRESUME_1();
-        private static final Resume resume2 = AbstractStorageTest.getRESUME_2();
-        private static final Resume resume3 = AbstractStorageTest.getRESUME_3();
-        private static final Resume resume4 = AbstractStorageTest.getRESUME_4();
+    private static final Resume resume1 = AbstractStorageTest.getRESUME_1();
+    private static final Resume resume2 = AbstractStorageTest.getRESUME_2();
+    private static final Resume resume3 = AbstractStorageTest.getRESUME_3();
+    private static final Resume resume4 = AbstractStorageTest.getRESUME_4();
 
     @Before
-    public  void setResumes() {
+    public void setResumes() {
         resume1.addContact(ContactType.MAIL, "PetrovIvan@mail.ru");
         resume1.addContact(ContactType.PHONE, "222333222");
         resume1.addSection(SectionType.OBJECTIVE, new TextSection("Охранник"));
@@ -101,6 +101,7 @@ public  class ResumeTestData {
                                 new Company.Period(1967, Month.JANUARY, 1977, Month.SEPTEMBER, "", ""))));
 
     }
+
     @Test
     public void doAllResumes() {
         printResumes(resume1);

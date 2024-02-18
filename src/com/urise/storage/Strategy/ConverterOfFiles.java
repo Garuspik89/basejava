@@ -1,11 +1,11 @@
-package com.urise.storage;
+package com.urise.storage.Strategy;
 
 import com.urise.exception.StorageException;
 import com.urise.model.Resume;
 
 import java.io.*;
 
-public class ConverterOfFiles implements Converter{
+public class ConverterOfFiles implements Converter {
 
     @Override
     public void doWrite(Resume r, OutputStream outputStream) throws IOException {

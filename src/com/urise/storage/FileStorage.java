@@ -2,6 +2,7 @@ package com.urise.storage;
 
 import com.urise.exception.StorageException;
 import com.urise.model.Resume;
+import com.urise.storage.Strategy.Converter;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -45,10 +46,11 @@ public class FileStorage extends AbstractStorage<File> {
     @Override
     protected void doSave(Resume resume, File file) {
         try {
-            converterOfFiles.doWrite(resume, new BufferedOutputStream(new FileOutputStream(file)));
+            file.createNewFile();
         } catch (IOException e) {
             throw new StorageException("IO error", file.getName());
         }
+        doUpdate(resume, file);
     }
 
     @Override
@@ -72,10 +74,7 @@ public class FileStorage extends AbstractStorage<File> {
 
     @Override
     protected List<Resume> doGetAll() {
-        File[] files = directory.listFiles();
-        if (files == null) {
-            throw new StorageException("Directory read error", directory.getName());
-        }
+        File[] files = getListFiles();
         List<Resume> list = new ArrayList<>(files.length);
         for (File file : files) {
             list.add(doGet(file));
@@ -85,12 +84,8 @@ public class FileStorage extends AbstractStorage<File> {
 
     @Override
     public void clear() {
-        File[] files = directory.listFiles();
-        if (files == null) {
-            throw new StorageException("Can't clear files, because directory isn't exist", directory.getName());
-        }
+        File[] files = getListFiles();
         for (File file : files) {
-
             doDelete(file);
         }
 
@@ -98,10 +93,15 @@ public class FileStorage extends AbstractStorage<File> {
 
     @Override
     public int size() {
+
+        return getListFiles().length;
+    }
+
+    private File[] getListFiles() {
         File[] files = directory.listFiles();
         if (files == null) {
-            throw new StorageException("Can't count number of files, because directory isn't exist", directory.getName());
+            throw new StorageException("Directory isn't exist", directory.getName());
         }
-        return files.length;
+        return files;
     }
 }
