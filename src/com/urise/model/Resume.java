@@ -1,5 +1,8 @@
 package com.urise.model;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.EnumMap;
 import java.util.Map;
@@ -8,6 +11,8 @@ import java.util.UUID;
 /**
  * Initial resume class
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Resume implements Comparable<Resume>, Serializable {
 
     // Unique identifier
@@ -47,11 +52,19 @@ public class Resume implements Comparable<Resume>, Serializable {
         return this.fullName;
     }
 
-    public String getContacts(ContactType contactEnum) {
+
+    public String getContact(ContactType contactEnum) {
         return contacts.get(contactEnum);
     }
 
-    public Section getSections(SectionType sectionEnum) {
+    public Map<ContactType, String> getContacts() {
+        return contacts;
+    }
+
+    public Map<SectionType, Section> getSections() {
+        return sections;
+    }
+    public Section getSection(SectionType sectionEnum) {
         return sections.get(sectionEnum);
     }
 

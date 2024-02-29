@@ -1,12 +1,18 @@
 package com.urise.model;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ListSection extends Section implements Serializable {
     private List<String> data;
+
+    public ListSection() {
+    }
 
     public ListSection(List<String> data) {
         this.data = data;

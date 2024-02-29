@@ -113,14 +113,14 @@ public class ResumeTestData {
 
     public static void printResumes(Resume resume) {
         System.out.println(resume.getFullName());
-        System.out.println(resume.getContacts(ContactType.MAIL));
-        System.out.println(resume.getContacts(ContactType.PHONE));
-        System.out.println(resume.getSections(SectionType.OBJECTIVE));
-        System.out.println(resume.getSections(SectionType.PERSONAL));
-        System.out.println(resume.getSections(SectionType.ACHIEVEMENT));
-        System.out.println(resume.getSections(SectionType.QUALIFICATIONS));
-        System.out.println(resume.getSections(SectionType.EXPERIENCE));
-        System.out.println(resume.getSections(SectionType.EDUCATION));
+        System.out.println(resume.getContact(ContactType.MAIL));
+        System.out.println(resume.getContact(ContactType.PHONE));
+        System.out.println(resume.getSection(SectionType.OBJECTIVE));
+        System.out.println(resume.getSection(SectionType.PERSONAL));
+        System.out.println(resume.getSection(SectionType.ACHIEVEMENT));
+        System.out.println(resume.getSection(SectionType.QUALIFICATIONS));
+        System.out.println(resume.getSection(SectionType.EXPERIENCE));
+        System.out.println(resume.getSection(SectionType.EDUCATION));
 
 
     }

@@ -7,5 +7,9 @@ public class DateUtil {
     public static LocalDate of(int year, Month month) {
         return LocalDate.of(year, month, 1);
     }
+
+    public  static LocalDate unmarshal(String str) {
+        return LocalDate.parse(str);
+    }
 }
 
