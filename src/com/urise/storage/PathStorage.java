@@ -2,7 +2,7 @@ package com.urise.storage;
 
 import com.urise.exception.StorageException;
 import com.urise.model.Resume;
-import com.urise.storage.Strategy.Converter;
+import com.urise.storage.strategy.Converter;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;

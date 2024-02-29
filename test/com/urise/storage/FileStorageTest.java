@@ -1,6 +1,6 @@
 package com.urise.storage;
 
-import com.urise.storage.Strategy.ConverterOfFiles;
+import com.urise.storage.strategy.ConverterOfFiles;
 
 import java.io.File;
 

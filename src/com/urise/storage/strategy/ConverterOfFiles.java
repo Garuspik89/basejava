@@ -1,4 +1,4 @@
-package com.urise.storage.Strategy;
+package com.urise.storage.strategy;
 
 import com.urise.exception.StorageException;
 import com.urise.model.Resume;

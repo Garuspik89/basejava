@@ -2,7 +2,7 @@ package com.urise.storage;
 
 import com.urise.exception.StorageException;
 import com.urise.model.Resume;
-import com.urise.storage.Strategy.Converter;
+import com.urise.storage.strategy.Converter;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -93,7 +93,6 @@ public class FileStorage extends AbstractStorage<File> {
 
     @Override
     public int size() {
-
         return getListFiles().length;
     }
 
