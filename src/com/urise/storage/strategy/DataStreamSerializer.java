@@ -6,7 +6,7 @@ import com.urise.util.DateUtil;
 import java.io.*;
 import java.util.*;
 
-public class DataStreamSerializer implements Converter {
+public class DataStreamSerializer<T> implements Converter {
     @Override
     public void doWrite(Resume r, OutputStream os) throws IOException {
         try (DataOutputStream dos = new DataOutputStream(os)) {
@@ -14,29 +14,27 @@ public class DataStreamSerializer implements Converter {
             dos.writeUTF(r.getFullName());
             Map<ContactType, String> contacts = r.getContacts();
             Map<SectionType, Section> sections = r.getSections();
-            dos.writeInt(contacts.size());
 
             CollectionsWriter contactsWriter = (collection) -> {
-                dos.writeUTF(collection.getKey().toString());
-                dos.writeUTF((String) collection.getValue());
+                Map.Entry<ContactType, String> entryOfContacts = (Map.Entry<ContactType, String>) collection;
+                dos.writeUTF(entryOfContacts.getKey().toString());
+                dos.writeUTF(entryOfContacts.getValue());
             };
 
-            writeWithException(contactsWriter, dos, contacts.entrySet());
-            dos.writeInt(sections.size());
-
             CollectionsWriter sectionWriter = (collection) -> {
-                SectionType typeOfSection = (SectionType) collection.getKey();
-                dos.writeUTF(collection.getKey().toString());
+                Map.Entry<SectionType, Section> entryOfSections = (Map.Entry<SectionType, Section>) collection;
+                SectionType typeOfSection = entryOfSections.getKey();
+                dos.writeUTF(entryOfSections.getKey().toString());
                 switch (typeOfSection) {
                     case PERSONAL:
                     case OBJECTIVE: {
-                        TextSection obj = (TextSection) collection.getValue();
+                        TextSection obj = (TextSection) entryOfSections.getValue();
                         dos.writeUTF(obj.getData());
                         break;
                     }
                     case ACHIEVEMENT:
                     case QUALIFICATIONS: {
-                        ListSection obj = (ListSection) collection.getValue();
+                        ListSection obj = (ListSection) entryOfSections.getValue();
                         List<String> listOfListOfSection = obj.getData();
                         dos.writeInt(listOfListOfSection.size());
                         for (int i = 0; i < listOfListOfSection.size(); i++) {
@@ -46,7 +44,7 @@ public class DataStreamSerializer implements Converter {
                     }
                     case EXPERIENCE:
                     case EDUCATION: {
-                        CompanySection companySection = (CompanySection) collection.getValue();
+                        CompanySection companySection = (CompanySection) entryOfSections.getValue();
                         List<Company> listOfCompany = companySection.getData();
                         dos.writeInt(listOfCompany.size());
                         for (int i = 0; i < listOfCompany.size(); i++) {
@@ -65,7 +63,8 @@ public class DataStreamSerializer implements Converter {
                     }
                 }
             };
-            writeWithException(sectionWriter, dos, sections.entrySet());
+            writeWithException(dos, (Collection<T>) contacts.entrySet(), contactsWriter);
+            writeWithException(dos, (Collection<T>) sections.entrySet(), sectionWriter);
         }
     }
 
@@ -129,11 +128,11 @@ public class DataStreamSerializer implements Converter {
         }
     }
 
-    private void writeWithException(CollectionsWriter collectionsWriter, DataOutputStream dos, Collection collection) throws IOException {
+    private void writeWithException(DataOutputStream dos, Collection<T> collection, CollectionsWriter collectionsWriter) throws IOException {
         Objects.requireNonNull(collectionsWriter);
-        Iterator i = collection.iterator();
-        while (i.hasNext()) {
-            collectionsWriter.writeSomeCollection((Map.Entry) i.next());
+        dos.writeInt(collection.size());
+        for (T t : collection) {
+            collectionsWriter.writeSomeCollection(t);
         }
 
     }
