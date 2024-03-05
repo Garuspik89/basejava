@@ -2,12 +2,9 @@ package com.urise.storage.strategy;
 
 import com.urise.model.*;
 import com.urise.util.DateUtil;
-import com.urise.util.LocalDateAdapter;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DataStreamSerializer implements Converter {
     @Override
@@ -18,68 +15,59 @@ public class DataStreamSerializer implements Converter {
             Map<ContactType, String> contacts = r.getContacts();
             Map<SectionType, Section> sections = r.getSections();
             dos.writeInt(contacts.size());
-            for (Map.Entry<ContactType, String> entry : contacts.entrySet()) {
-                dos.writeUTF(entry.getKey().name());
-                dos.writeUTF(entry.getValue());
-            }
+
+            CollectionsWriter contactsWriter = (collection) -> {
+                dos.writeUTF(collection.getKey().toString());
+                dos.writeUTF((String) collection.getValue());
+            };
+
+            writeWithException(contactsWriter, dos, contacts.entrySet());
             dos.writeInt(sections.size());
-            for (Map.Entry<SectionType, Section> entry : sections.entrySet()) {
-                switch (entry.getKey()) {
+
+            CollectionsWriter sectionWriter = (collection) -> {
+                SectionType typeOfSection = (SectionType) collection.getKey();
+                dos.writeUTF(collection.getKey().toString());
+                switch (typeOfSection) {
                     case PERSONAL:
                     case OBJECTIVE: {
-                        dos.writeUTF(entry.getKey().name());
-                        TextSection obj = (TextSection) entry.getValue();
+                        TextSection obj = (TextSection) collection.getValue();
                         dos.writeUTF(obj.getData());
                         break;
                     }
                     case ACHIEVEMENT:
                     case QUALIFICATIONS: {
-                        dos.writeUTF(entry.getKey().name());
-                        ListSection obj = (ListSection) entry.getValue();
+                        ListSection obj = (ListSection) collection.getValue();
                         List<String> listOfListOfSection = obj.getData();
                         dos.writeInt(listOfListOfSection.size());
-                        listOfListOfSection.forEach(((section) -> {
-                            try {
-                                dos.writeUTF(section);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }));
+                        for (int i = 0; i < listOfListOfSection.size(); i++) {
+                            dos.writeUTF(listOfListOfSection.get(i));
+                        }
                         break;
                     }
                     case EXPERIENCE:
                     case EDUCATION: {
-                        dos.writeUTF(entry.getKey().name());
-                        CompanySection companySection = (CompanySection) entry.getValue();
+                        CompanySection companySection = (CompanySection) collection.getValue();
                         List<Company> listOfCompany = companySection.getData();
                         dos.writeInt(listOfCompany.size());
-                        listOfCompany.forEach((section) -> {
-                            try {
-                                dos.writeUTF(section.getName());
-                                dos.writeUTF(section.getWebSite());
-                                List<Company.Period> listOfPeriodCompany = section.getPeriodList();
-                                dos.writeInt(listOfPeriodCompany.size());
-                                listOfPeriodCompany.forEach((period) -> {
-                                    try {
-                                        dos.writeUTF(period.getFirstDate().toString());
-                                        dos.writeUTF(period.getSecondDate().toString());
-                                        dos.writeUTF(period.getDescription());
-                                        dos.writeUTF(period.getTitle());
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                });
-                            } catch (IOException e) {
-                                e.printStackTrace();
+                        for (int i = 0; i < listOfCompany.size(); i++) {
+                            dos.writeUTF(listOfCompany.get(i).getName());
+                            dos.writeUTF(listOfCompany.get(i).getWebSite());
+                            List<Company.Period> listOfPeriodCompany = listOfCompany.get(i).getPeriodList();
+                            dos.writeInt(listOfPeriodCompany.size());
+                            for (int j = 0; j < listOfPeriodCompany.size(); j++) {
+                                dos.writeUTF(listOfPeriodCompany.get(j).getFirstDate().toString());
+                                dos.writeUTF(listOfPeriodCompany.get(j).getSecondDate().toString());
+                                dos.writeUTF(listOfPeriodCompany.get(j).getDescription());
+                                dos.writeUTF(listOfPeriodCompany.get(j).getTitle());
                             }
-                        });
+                        }
+                        break;
                     }
-            }
+                }
+            };
+            writeWithException(sectionWriter, dos, sections.entrySet());
         }
     }
-
-
-}
 
     @Override
     public Resume doRead(InputStream is) throws IOException {
@@ -94,7 +82,7 @@ public class DataStreamSerializer implements Converter {
 
             int countOfSections = dis.readInt();
             SectionType sectionType;
-            for (int i = 0; i < countOfSections ;i++) {
+            for (int i = 0; i < countOfSections; i++) {
                 sectionType = SectionType.valueOf(dis.readUTF());
                 switch (sectionType) {
                     case PERSONAL:
@@ -109,7 +97,7 @@ public class DataStreamSerializer implements Converter {
                         for (int j = 0; j < sizeOfListSection; j++) {
                             listOfListSection.add(dis.readUTF());
                         }
-                        resume.addSection(sectionType,new ListSection(listOfListSection));
+                        resume.addSection(sectionType, new ListSection(listOfListSection));
                         break;
                     }
                     case EXPERIENCE:
@@ -117,7 +105,7 @@ public class DataStreamSerializer implements Converter {
                         List<Company> listOfCompany = new ArrayList<>();
                         List<Company.Period> listOfPeriodCompany = new ArrayList<>();
                         int countOfCompany = dis.readInt();
-                        for (int j = 0; j < countOfCompany ; j++) {
+                        for (int j = 0; j < countOfCompany; j++) {
                             Company company = new Company();
                             company.setName(dis.readUTF());
                             company.setWebSite(dis.readUTF());
@@ -131,13 +119,22 @@ public class DataStreamSerializer implements Converter {
                                 listOfPeriodCompany.add(companyPeriod);
                             }
                             listOfCompany.add(company);
-                            }
-                        resume.addSection(sectionType,new CompanySection(listOfCompany));
+                        }
+                        resume.addSection(sectionType, new CompanySection(listOfCompany));
                     }
                 }
             }
 
             return resume;
         }
+    }
+
+    private void writeWithException(CollectionsWriter collectionsWriter, DataOutputStream dos, Collection collection) throws IOException {
+        Objects.requireNonNull(collectionsWriter);
+        Iterator i = collection.iterator();
+        while (i.hasNext()) {
+            collectionsWriter.writeSomeCollection((Map.Entry) i.next());
+        }
+
     }
 }
