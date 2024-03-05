@@ -15,13 +15,12 @@ public class DataStreamSerializer<T> implements Converter {
             Map<ContactType, String> contacts = r.getContacts();
             Map<SectionType, Section> sections = r.getSections();
 
-            CollectionsWriter contactsWriter = (collection) -> {
+            writeWithException(dos, (Collection<T>) contacts.entrySet(), (collection) -> {
                 Map.Entry<ContactType, String> entryOfContacts = (Map.Entry<ContactType, String>) collection;
                 dos.writeUTF(entryOfContacts.getKey().toString());
                 dos.writeUTF(entryOfContacts.getValue());
-            };
-
-            CollectionsWriter sectionWriter = (collection) -> {
+            });
+            writeWithException(dos, (Collection<T>) sections.entrySet(), (collection) -> {
                 Map.Entry<SectionType, Section> entryOfSections = (Map.Entry<SectionType, Section>) collection;
                 SectionType typeOfSection = entryOfSections.getKey();
                 dos.writeUTF(entryOfSections.getKey().toString());
@@ -62,9 +61,7 @@ public class DataStreamSerializer<T> implements Converter {
                         break;
                     }
                 }
-            };
-            writeWithException(dos, (Collection<T>) contacts.entrySet(), contactsWriter);
-            writeWithException(dos, (Collection<T>) sections.entrySet(), sectionWriter);
+            });
         }
     }
 
