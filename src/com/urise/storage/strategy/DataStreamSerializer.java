@@ -63,15 +63,11 @@ public class DataStreamSerializer implements Converter {
             String uuid = dis.readUTF();
             String fullName = dis.readUTF();
             Resume resume = new Resume(uuid, fullName);
-            int size = dis.readInt();
-            for (int i = 0; i < size; i++) {
-                resume.addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF());
-            }
 
-            int countOfSections = dis.readInt();
-            SectionType sectionType;
-            for (int i = 0; i < countOfSections; i++) {
-                sectionType = SectionType.valueOf(dis.readUTF());
+            readWithException(dis, () ->
+                    resume.addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF()));
+            readWithException(dis, () ->{
+                SectionType sectionType = SectionType.valueOf(dis.readUTF());
                 switch (sectionType) {
                     case PERSONAL:
                     case OBJECTIVE: {
@@ -81,10 +77,8 @@ public class DataStreamSerializer implements Converter {
                     case ACHIEVEMENT:
                     case QUALIFICATIONS: {
                         List<String> listOfListSection = new ArrayList<>();
-                        int sizeOfListSection = dis.readInt();
-                        for (int j = 0; j < sizeOfListSection; j++) {
-                            listOfListSection.add(dis.readUTF());
-                        }
+                        readWithException(dis, () ->
+                                listOfListSection.add(dis.readUTF()));
                         resume.addSection(sectionType, new ListSection(listOfListSection));
                         break;
                     }
@@ -92,27 +86,15 @@ public class DataStreamSerializer implements Converter {
                     case EDUCATION: {
                         List<Company> listOfCompany = new ArrayList<>();
                         List<Company.Period> listOfPeriodCompany = new ArrayList<>();
-                        int countOfCompany = dis.readInt();
-                        for (int j = 0; j < countOfCompany; j++) {
-                            Company company = new Company();
-                            company.setName(dis.readUTF());
-                            company.setWebSite(dis.readUTF());
-                            int countOfPeriodsOfCompany = dis.readInt();
-                            for (int k = 0; k < countOfPeriodsOfCompany; k++) {
-                                Company.Period companyPeriod = new Company.Period();
-                                companyPeriod.setFirstDate(DateUtil.unmarshal(dis.readUTF()));
-                                companyPeriod.setSecondDate(DateUtil.unmarshal(dis.readUTF()));
-                                companyPeriod.setDescription(dis.readUTF());
-                                companyPeriod.setTitle(dis.readUTF());
-                                listOfPeriodCompany.add(companyPeriod);
-                            }
-                            listOfCompany.add(company);
-                        }
+                        readWithException(dis, () -> {
+                            listOfCompany.add(new Company(dis.readUTF(), dis.readUTF(), listOfPeriodCompany));
+                            readWithException(dis, () ->
+                                    listOfPeriodCompany.add(new Company.Period(DateUtil.unmarshal(dis.readUTF()), DateUtil.unmarshal(dis.readUTF()), dis.readUTF(), dis.readUTF())));
+                        });
                         resume.addSection(sectionType, new CompanySection(listOfCompany));
                     }
                 }
-            }
-
+            });
             return resume;
         }
     }
@@ -123,6 +105,13 @@ public class DataStreamSerializer implements Converter {
         for (T t : collection) {
             collectionsWriter.writeSomeCollection(t);
         }
+    }
 
+    private void readWithException(DataInputStream dis, CollectionsReader collectionsReader) throws IOException {
+        Objects.requireNonNull(collectionsReader);
+        int size = dis.readInt();
+        for (int i = 0; i < size; i++) {
+            collectionsReader.readSomeCollection();
+        }
     }
 }

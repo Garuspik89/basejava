@@ -97,6 +97,13 @@ public class Company implements Serializable {
             this.title = title;
         }
 
+        public Period(LocalDate firstDate, LocalDate secondDate, String title, String description) {
+            this.firstDate = firstDate;
+            this.secondDate = secondDate;
+            this.description = description;
+            this.title = title;
+        }
+
         @Override
         public String toString() {
             return "Period{" +
