@@ -1,5 +1,6 @@
 package com.urise.storage;
 
+import com.urise.exception.ExistStorageException;
 import com.urise.exception.NotExistStorageException;
 import com.urise.model.Resume;
 import com.urise.sql.SqlExecutor;
@@ -52,12 +53,22 @@ public class SqlStorage implements Storage {
     @Override
     public void save(Resume r) {
         sqlHelper = new SqlHelper();
-        sqlHelper.preparedStatement("INSERT INTO resume (uuid, full_name) VALUES (?,?)");
+        sqlHelper.preparedStatement("SELECT * FROM resume r WHERE r.uuid =?");
         PreparedStatement ps = sqlHelper.getPs();
         executeQuery(ps, entry -> {
             ps.setString(1, r.getUuid());
-            ps.setString(2, r.getFullName());
-            ps.execute();
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                throw new ExistStorageException(r.getUuid());
+            }
+        });
+        sqlHelper = new SqlHelper();
+        sqlHelper.preparedStatement("INSERT INTO resume (uuid, full_name) VALUES (?,?)");
+        PreparedStatement ps2= sqlHelper.getPs();
+        executeQuery(ps, entry -> {
+            ps2.setString(1, r.getUuid());
+            ps2.setString(2, r.getFullName());
+            ps2.execute();
         });
     }
 
