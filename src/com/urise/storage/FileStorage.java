@@ -14,7 +14,6 @@ public class FileStorage extends AbstractStorage<File> {
 
     protected FileStorage(File directory, Converter converterOfFiles) {
 
-
         this.converterOfFiles = converterOfFiles;
         if (!directory.isDirectory()) {
             throw new IllegalArgumentException(directory.getAbsolutePath() + " is not directory");
