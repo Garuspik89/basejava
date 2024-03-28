@@ -1,6 +1,5 @@
 package com.urise.storage;
 
-import com.Config;
 import com.urise.exception.ExistStorageException;
 import com.urise.exception.NotExistStorageException;
 import com.urise.model.Resume;
@@ -12,22 +11,23 @@ import java.util.List;
 
 public class SqlStorage implements Storage {
 
-    SqlHelper sqlHelper;
+    private SqlHelper sqlHelper;
 
-    SqlStorage() {
-        sqlHelper = new SqlHelper(Config.get().getDbURL(), Config.get().getDbUser(), Config.get().getDbPassword());
+    public SqlStorage(String dbUrl, String dbUser, String dbPassword) {
+        sqlHelper = new SqlHelper(dbUrl, dbUser, dbPassword);
     }
 
     @Override
     public void clear() {
         sqlHelper.execute("DELETE FROM resume", entry -> {
             entry.execute();
-            return null;});
+            return null;
+        });
     }
 
     @Override
     public Resume get(String uuid) {
-         return (Resume) sqlHelper.execute("SELECT * FROM resume r WHERE r.uuid =?", entry -> {
+        return (Resume) sqlHelper.execute("SELECT * FROM resume r WHERE r.uuid =?", entry -> {
             entry.setString(1, uuid);
             ResultSet rs = entry.executeQuery();
             if (!rs.next()) {
@@ -86,7 +86,7 @@ public class SqlStorage implements Storage {
 
     @Override
     public int size() {
-       return (int) sqlHelper.execute("SELECT COUNT(uuid) FROM resume", entry -> {
+        return (int) sqlHelper.execute("SELECT COUNT(uuid) FROM resume", entry -> {
             ResultSet rs = entry.executeQuery();
             rs.next();
             return rs.getInt("count");

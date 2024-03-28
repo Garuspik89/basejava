@@ -1,7 +1,9 @@
 package com.urise.storage;
 
+import com.Config;
+
 public class SqlStorageTest  extends AbstractStorageTest{
     public SqlStorageTest() {
-        super(new SqlStorage());
+        super(Config.get().getStorage());
     }
 }
