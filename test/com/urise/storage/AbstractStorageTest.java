@@ -2,10 +2,12 @@ package com.urise.storage;
 
 import com.urise.exception.ExistStorageException;
 import com.urise.exception.NotExistStorageException;
-import com.urise.model.Resume;
+import com.urise.model.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.time.Month;
 
 
 public abstract class AbstractStorageTest {
@@ -27,7 +29,7 @@ public abstract class AbstractStorageTest {
     private static final Resume RESUME_4 = new Resume(UUID_4, "Хомич Станислав Анатольевич");
 
 
-    /*static {
+    static {
         RESUME_1.addContact(ContactType.MAIL, "PetrovIvan@mail.ru");
         RESUME_1.addContact(ContactType.PHONE, "222333222");
         RESUME_1.addSection(SectionType.OBJECTIVE, new TextSection("Охранник"));
@@ -112,7 +114,7 @@ public abstract class AbstractStorageTest {
                 new CompanySection(
                         new Company("Школа 89", "http://School89.ru",
                                 new Company.Period(1967, Month.JANUARY, 1977, Month.SEPTEMBER, "", ""))));
-    }*/
+    }
 
     public static Resume getRESUME_1() {
         return RESUME_1;
