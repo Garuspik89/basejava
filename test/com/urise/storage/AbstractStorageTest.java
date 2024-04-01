@@ -30,7 +30,7 @@ public abstract class AbstractStorageTest {
 
 
     static {
-        RESUME_1.addContact(ContactType.MAIL, "PetrovIvan@mail.ru");
+     /*   RESUME_1.addContact(ContactType.MAIL, "PetrovIvan@mail.ru");
         RESUME_1.addContact(ContactType.PHONE, "222333222");
         RESUME_1.addSection(SectionType.OBJECTIVE, new TextSection("Охранник"));
         RESUME_1.addSection(SectionType.PERSONAL, new TextSection("Надежность,Сила,Внимательность"));
@@ -51,7 +51,7 @@ public abstract class AbstractStorageTest {
                         new Company("Школа 89", "http://School89.ru",
                                 new Company.Period(1967, Month.JANUARY, 1977, Month.SEPTEMBER, "", ""))));
 
-
+*/
         RESUME_2.addContact(ContactType.MAIL, "GorskayaTanya@mail.ru");
         RESUME_2.addContact(ContactType.PHONE, "444999123");
         RESUME_2.addSection(SectionType.OBJECTIVE, new TextSection("Бухгалтер"));
