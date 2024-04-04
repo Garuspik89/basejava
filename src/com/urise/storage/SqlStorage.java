@@ -74,10 +74,10 @@ public class SqlStorage implements Storage {
                 ps.setString(1, r.getUuid());
                 ps.setString(2, r.getFullName());
                 ps.execute();
-                insertContacts(conn, r);
                 ps.executeBatch();
-                return null;
             }
+            insertContacts(conn, r);
+            return null;
         });
     }
 
