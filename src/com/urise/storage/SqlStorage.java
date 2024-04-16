@@ -104,10 +104,10 @@ public class SqlStorage implements Storage {
                     resume = new Resume(resumeUUid, rs.getString("full_name"));
                     mapForSearching.put(resumeUUid, resume);
                 }
-
-                addContactToResume(resume);
-                addSectionToResume(resume);
             }
+            addContactsToResumes(mapForSearching);
+            addSectionsToResumes(mapForSearching);
+
             return new ArrayList<>(mapForSearching.values());
         });
     }
@@ -149,12 +149,8 @@ public class SqlStorage implements Storage {
                     }
                     case ACHIEVEMENT:
                     case QUALIFICATIONS: {
-                        String str2 = "";
                         ListSection data = (ListSection) e.getValue();
-                        for (String str : data.getData()) {
-                            str2 = (str2.equals("")) ? str + "\n" : str2 + str + "\n";
-                        }
-                        ps.setString(3, str2);
+                        ps.setString(3, String.join("\n", data.getData()));
                         ps.addBatch();
                         break;
                     }
@@ -180,6 +176,22 @@ public class SqlStorage implements Storage {
         });
 
 
+    }
+
+    private void addContactsToResumes(Map<String, Resume> map) throws SQLException {
+        sqlHelper.execute("select * from contact ", ps -> {
+            ResultSet rsContacts = ps.executeQuery();
+            if (rsContacts == null) {
+                return null;
+            }
+            while (rsContacts.next()) {
+                Resume resume = map.get(rsContacts.getString("resume_uuid"));
+                ContactType type = ContactType.valueOf(rsContacts.getString("type"));
+                String value = rsContacts.getString("value");
+                resume.addContact(type, value);
+            }
+            return null;
+        });
     }
 
     private void addSectionToResume(Resume resume) throws SQLException {
@@ -211,6 +223,34 @@ public class SqlStorage implements Storage {
         });
     }
 
+    private void addSectionsToResumes(Map<String, Resume> map) throws SQLException {
+        sqlHelper.execute("select * from section ", ps -> {
+            ResultSet rsSection = ps.executeQuery();
+            if (rsSection == null) {
+                return null;
+            }
+            while (rsSection.next()) {
+                Resume resume = map.get(rsSection.getString("resume_uuid"));
+                SectionType sectionType = SectionType.valueOf(rsSection.getString("type"));
+                switch (sectionType) {
+                    case PERSONAL:
+                    case OBJECTIVE: {
+                        resume.addSection(sectionType, new TextSection(rsSection.getString("value")));
+                        break;
+                    }
+                    case ACHIEVEMENT:
+                    case QUALIFICATIONS: {
+                        List<String> listOfListSection = new ArrayList<>();
+                        String[] lines = rsSection.getString("value").split("\\n");
+                        listOfListSection.addAll(Arrays.asList(lines));
+                        resume.addSection(sectionType, new ListSection(listOfListSection));
+                        break;
+                    }
+                }
+            }
+            return null;
+        });
+    }
     private void deleteContacts(Connection conn, Resume resume) {
         sqlHelper.execute("DELETE  FROM contact WHERE resume_uuid=?", ps -> {
             ps.setString(1, resume.getUuid());

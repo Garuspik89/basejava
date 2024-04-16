@@ -2,7 +2,9 @@ package com.urise.web;
 
 import com.Config;
 import com.urise.model.Resume;
+import com.urise.storage.Storage;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,12 +13,14 @@ import java.io.PrintWriter;
 import java.util.List;
 
 public class ResumeServlet extends HttpServlet {
+    Storage storage;
+    List<Resume> list;
+
     @Override
     protected void doGet(HttpServletRequest request,HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=UTF-8");
-        List<Resume> list = Config.get().getStorage().getAllSorted();
         PrintWriter writer = response.getWriter();
 
         writer.println("<table>\n" +
@@ -40,5 +44,11 @@ public class ResumeServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
 
+    }
+
+    @Override
+    public void init(ServletConfig config) {
+        storage = Config.get().getStorage();
+        list = storage.getAllSorted();
     }
 }
