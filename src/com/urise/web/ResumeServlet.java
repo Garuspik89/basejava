@@ -13,11 +13,15 @@ import java.io.PrintWriter;
 import java.util.List;
 
 public class ResumeServlet extends HttpServlet {
-    Storage storage;
-    List<Resume> list;
+    private Storage storage;
 
     @Override
-    protected void doGet(HttpServletRequest request,HttpServletResponse response) throws javax.servlet.ServletException, IOException {
+    public void init(ServletConfig config) {
+        storage = Config.get().getStorage();
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=UTF-8");
@@ -29,7 +33,7 @@ public class ResumeServlet extends HttpServlet {
                 "<th>UUID</th>\n" +
                 "<th>Full Name</th>\n" +
                 "</tr>");
-
+        List<Resume> list = storage.getAllSorted();
         for (Resume r : list) {
             writer.println("<tr>");
             writer.println("<td>" + r.getUuid() + "</td>");
@@ -46,9 +50,5 @@ public class ResumeServlet extends HttpServlet {
 
     }
 
-    @Override
-    public void init(ServletConfig config) {
-        storage = Config.get().getStorage();
-        list = storage.getAllSorted();
-    }
+
 }

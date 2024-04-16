@@ -107,7 +107,6 @@ public class SqlStorage implements Storage {
             }
             addContactsToResumes(mapForSearching);
             addSectionsToResumes(mapForSearching);
-
             return new ArrayList<>(mapForSearching.values());
         });
     }
@@ -161,110 +160,97 @@ public class SqlStorage implements Storage {
     }
 
     private void addContactToResume(Resume resume) throws SQLException {
-        sqlHelper.execute("select * from contact WHERE resume_uuid =?", ps -> {
+        sqlHelper.execute("SELECT * FROM contact WHERE resume_uuid =?", ps -> {
             ps.setString(1, resume.getUuid());
             ResultSet rsContacts = ps.executeQuery();
-            if (rsContacts == null) {
-                return null;
-            }
             while (rsContacts.next()) {
-                ContactType type = ContactType.valueOf(rsContacts.getString("type"));
-                String value = rsContacts.getString("value");
-                resume.addContact(type, value);
+                doContactToResume(rsContacts, resume);
             }
             return null;
         });
-
-
     }
 
     private void addContactsToResumes(Map<String, Resume> map) throws SQLException {
-        sqlHelper.execute("select * from contact ", ps -> {
+        sqlHelper.execute("SELECT * FROM contact ", ps -> {
             ResultSet rsContacts = ps.executeQuery();
-            if (rsContacts == null) {
-                return null;
-            }
             while (rsContacts.next()) {
                 Resume resume = map.get(rsContacts.getString("resume_uuid"));
-                ContactType type = ContactType.valueOf(rsContacts.getString("type"));
-                String value = rsContacts.getString("value");
-                resume.addContact(type, value);
+                doContactToResume(rsContacts, resume);
             }
             return null;
         });
     }
 
+    private void doContactToResume(ResultSet rs, Resume resume) throws SQLException {
+        if (rs == null) {
+            return;
+        }
+        while (rs.next()) {
+            ContactType type = ContactType.valueOf(rs.getString("type"));
+            String value = rs.getString("value");
+            resume.addContact(type, value);
+        }
+    }
+
     private void addSectionToResume(Resume resume) throws SQLException {
-        sqlHelper.execute("select * from section WHERE resume_uuid =?", ps -> {
+        sqlHelper.execute("SELECT * FROM section WHERE resume_uuid =?", ps -> {
             ps.setString(1, resume.getUuid());
             ResultSet rsSection = ps.executeQuery();
             if (rsSection == null) {
                 return null;
             }
             while (rsSection.next()) {
-                SectionType sectionType = SectionType.valueOf(rsSection.getString("type"));
-                switch (sectionType) {
-                    case PERSONAL:
-                    case OBJECTIVE: {
-                        resume.addSection(sectionType, new TextSection(rsSection.getString("value")));
-                        break;
-                    }
-                    case ACHIEVEMENT:
-                    case QUALIFICATIONS: {
-                        List<String> listOfListSection = new ArrayList<>();
-                        String[] lines = rsSection.getString("value").split("\\n");
-                        listOfListSection.addAll(Arrays.asList(lines));
-                        resume.addSection(sectionType, new ListSection(listOfListSection));
-                        break;
-                    }
-                }
+                doSectionToResume(rsSection, resume);
             }
             return null;
         });
     }
 
     private void addSectionsToResumes(Map<String, Resume> map) throws SQLException {
-        sqlHelper.execute("select * from section ", ps -> {
+        sqlHelper.execute("SELECT * FROM section ", ps -> {
             ResultSet rsSection = ps.executeQuery();
             if (rsSection == null) {
                 return null;
             }
             while (rsSection.next()) {
                 Resume resume = map.get(rsSection.getString("resume_uuid"));
-                SectionType sectionType = SectionType.valueOf(rsSection.getString("type"));
-                switch (sectionType) {
-                    case PERSONAL:
-                    case OBJECTIVE: {
-                        resume.addSection(sectionType, new TextSection(rsSection.getString("value")));
-                        break;
-                    }
-                    case ACHIEVEMENT:
-                    case QUALIFICATIONS: {
-                        List<String> listOfListSection = new ArrayList<>();
-                        String[] lines = rsSection.getString("value").split("\\n");
-                        listOfListSection.addAll(Arrays.asList(lines));
-                        resume.addSection(sectionType, new ListSection(listOfListSection));
-                        break;
-                    }
-                }
+                doSectionToResume(rsSection, resume);
             }
             return null;
         });
     }
-    private void deleteContacts(Connection conn, Resume resume) {
-        sqlHelper.execute("DELETE  FROM contact WHERE resume_uuid=?", ps -> {
-            ps.setString(1, resume.getUuid());
-            ps.execute();
-            return null;
-        });
+
+    private void doSectionToResume(ResultSet rs, Resume resume) throws SQLException {
+        SectionType sectionType = SectionType.valueOf(rs.getString("type"));
+        switch (sectionType) {
+            case PERSONAL:
+            case OBJECTIVE: {
+                resume.addSection(sectionType, new TextSection(rs.getString("value")));
+                break;
+            }
+            case ACHIEVEMENT:
+            case QUALIFICATIONS: {
+                List<String> listOfListSection = new ArrayList<>();
+                String[] lines = rs.getString("value").split("\\n");
+                listOfListSection.addAll(Arrays.asList(lines));
+                resume.addSection(sectionType, new ListSection(listOfListSection));
+                break;
+            }
+        }
     }
 
-    private void deleteSections(Connection conn, Resume resume) {
-        sqlHelper.execute("DELETE  FROM section WHERE resume_uuid=?", ps -> {
+    private void deleteContacts(Connection conn, Resume resume) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement("DELETE FROM contact WHERE resume_uuid=?")) {
             ps.setString(1, resume.getUuid());
             ps.execute();
-            return null;
-        });
+        }
+    }
+
+    private void deleteSections(Connection conn, Resume resume) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement("DELETE FROM section WHERE resume_uuid=?")) {
+            ps.setString(1, resume.getUuid());
+            ps.execute();
+        }
     }
 }
 
