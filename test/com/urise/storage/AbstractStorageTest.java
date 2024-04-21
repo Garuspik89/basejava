@@ -167,18 +167,18 @@ public abstract class AbstractStorageTest {
         Assert.assertEquals(resumeForUpdating, storage.get(UUID_1));
     }
 
- /*   @Test
+ @Test
     public void clear() {
-        storage.clear();
-        assertSize(0);
-        Resume[] resumesAfterClear = storage.getAllSorted().toArray(new Resume[0]);
-        Resume[] emptyResumes = new Resume[0];
-        Assert.assertArrayEquals(resumesAfterClear, emptyResumes);
-    }
-*/
+     storage.clear();
+     assertSize(0);
+     Resume[] resumesAfterClear = storage.getAllSorted().toArray(new Resume[0]);
+     Resume[] emptyResumes = new Resume[0];
+     Assert.assertArrayEquals(resumesAfterClear, emptyResumes);
+
+ }
     @Test
     public void getAll() {
-        Resume[] actual = storage.getAllSorted().toArray(new Resume[0]);
+        Resume[] actual = storage.getAllSorted().toArray(new Resume[1]);
         Resume[] model = new Resume[]{RESUME_2, RESUME_1, RESUME_3};
         Assert.assertArrayEquals(actual, model);
     }
