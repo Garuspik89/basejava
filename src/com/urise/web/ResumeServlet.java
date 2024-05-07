@@ -31,7 +31,6 @@ public class ResumeServlet extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/jsp/list.jsp").forward(request, response);
             return;
         }
-        String isItNewResume;
         Resume r;
         switch (action) {
             case "delete":
@@ -41,16 +40,14 @@ public class ResumeServlet extends HttpServlet {
             case "view":
             case "edit":
                 r = storage.get(uuid);
-                isItNewResume = "No";
                 break;
             case "add":
                 r = new Resume();
-                isItNewResume = "Yes";
                 break;
             default:
                 throw new IllegalArgumentException("Action " + action + " is illegal");
         }
-        request.setAttribute("isItNewResume",isItNewResume );
+
         request.setAttribute("resume",r);
         request.getRequestDispatcher(
                 ("view".equals(action) ? "/WEB-INF/jsp/view.jsp" : "/WEB-INF/jsp/edit.jsp")
