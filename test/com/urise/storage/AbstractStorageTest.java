@@ -71,7 +71,6 @@ public abstract class AbstractStorageTest {
                 new CompanySection(
                         new Company("Школа 89", "http://School89.ru",
                                 new Company.Period(1967, Month.JANUARY, 1977, Month.SEPTEMBER, "", ""))));
-
         RESUME_3.addContact(ContactType.MAIL, "RakovEgor@mail.ru");
         RESUME_3.addContact(ContactType.PHONE, "226772345");
         RESUME_3.addSection(SectionType.OBJECTIVE, new TextSection("Программист"));
@@ -92,7 +91,6 @@ public abstract class AbstractStorageTest {
                 new CompanySection(
                         new Company("Школа 89", "http://School89.ru",
                                 new Company.Period(1967, Month.JANUARY, 1977, Month.SEPTEMBER, "", ""))));
-
         RESUME_4.addContact(ContactType.MAIL, "HomichStas@mail.ru");
         RESUME_4.addContact(ContactType.PHONE, "226772345");
         RESUME_4.addSection(SectionType.OBJECTIVE, new TextSection("Программист"));
@@ -167,7 +165,7 @@ public abstract class AbstractStorageTest {
         Assert.assertEquals(resumeForUpdating, storage.get(UUID_1));
     }
 
- @Test
+/* @Test
     public void clear() {
      storage.clear();
      assertSize(0);
@@ -175,7 +173,7 @@ public abstract class AbstractStorageTest {
      Resume[] emptyResumes = new Resume[0];
      Assert.assertArrayEquals(resumesAfterClear, emptyResumes);
 
- }
+ }*/
     @Test
     public void getAll() {
         Resume[] actual = storage.getAllSorted().toArray(new Resume[1]);

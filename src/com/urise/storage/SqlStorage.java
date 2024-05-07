@@ -164,7 +164,9 @@ public class SqlStorage implements Storage {
             ps.setString(1, resume.getUuid());
             ResultSet rsContacts = ps.executeQuery();
             while (rsContacts.next()) {
-                doContactToResume(rsContacts, resume);
+                ContactType type = ContactType.valueOf(rsContacts.getString("type"));
+                String value = rsContacts.getString("value");
+                resume.addContact(type, value);
             }
             return null;
         });
@@ -175,21 +177,14 @@ public class SqlStorage implements Storage {
             ResultSet rsContacts = ps.executeQuery();
             while (rsContacts.next()) {
                 Resume resume = map.get(rsContacts.getString("resume_uuid"));
-                doContactToResume(rsContacts, resume);
+                if (resume.getUuid().equals(rsContacts.getString("resume_uuid"))) {
+                    ContactType type = ContactType.valueOf(rsContacts.getString("type"));
+                    String value = rsContacts.getString("value");
+                    resume.addContact(type, value);
+                }
             }
             return null;
         });
-    }
-
-    private void doContactToResume(ResultSet rs, Resume resume) throws SQLException {
-        if (rs == null) {
-            return;
-        }
-        while (rs.next()) {
-            ContactType type = ContactType.valueOf(rs.getString("type"));
-            String value = rs.getString("value");
-            resume.addContact(type, value);
-        }
     }
 
     private void addSectionToResume(Resume resume) throws SQLException {
