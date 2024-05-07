@@ -69,7 +69,7 @@ public class ResumeServlet extends HttpServlet {
         if(newResume.equals("false")) {
             r = storage.get(uuid);
         } else {
-            r = new Resume(uuid);
+            r = new Resume(uuid,fullName);
             storage.save(r);
         }
         r.setFullName(fullName);

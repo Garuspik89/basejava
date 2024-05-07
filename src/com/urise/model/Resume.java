@@ -24,7 +24,7 @@ public class Resume implements Comparable<Resume>, Serializable {
 
     public Resume() {
 
-        this(UUID.randomUUID().toString(), "");
+        this(UUID.randomUUID().toString().substring(0,5), "");
     }
 
     public Resume(String fullName) {
