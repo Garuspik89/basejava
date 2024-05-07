@@ -49,7 +49,8 @@
                 </c:choose>
             </c:if>
         </c:forEach>
-        <button type="submit"  value="send request">Сохранить</button>
+        <input type="text" name="newResume" value="${newResume}">
+        <button type="submit"  value="send request" for="newResume">Сохранить</button>
         <button type ="reset" onclick="window.history.back()">Отменить</button>
     </form>
 </section>

@@ -6,6 +6,7 @@ import com.urise.model.*;
 import com.urise.storage.Storage;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,6 +33,7 @@ public class ResumeServlet extends HttpServlet {
             return;
         }
         Resume r;
+        String newResume;
         switch (action) {
             case "delete":
                 storage.delete(uuid);
@@ -40,15 +42,18 @@ public class ResumeServlet extends HttpServlet {
             case "view":
             case "edit":
                 r = storage.get(uuid);
+                newResume = "false";
                 break;
             case "add":
                 r = new Resume();
+                newResume = "true";
                 break;
             default:
                 throw new IllegalArgumentException("Action " + action + " is illegal");
         }
 
         request.setAttribute("resume",r);
+        request.setAttribute("newResume",newResume);
         request.getRequestDispatcher(
                 ("view".equals(action) ? "/WEB-INF/jsp/view.jsp" : "/WEB-INF/jsp/edit.jsp")
         ).forward(request, response);
@@ -59,10 +64,11 @@ public class ResumeServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
+        String newResume = request.getParameter("newResume");
         Resume r;
-        try {
+        if(newResume.equals("false")) {
             r = storage.get(uuid);
-        } catch (StorageException e){
+        } else {
             r = new Resume(uuid);
             storage.save(r);
         }
