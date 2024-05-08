@@ -49,7 +49,7 @@
                 </c:choose>
             </c:if>
         </c:forEach>
-        <input type="hidden" name="newResume" value="${newResume}">
+        <input type="hidden"  name="newResume" value="${newResume}">
         <button type="submit"   for="newResume">Сохранить</button>
         <button type ="reset" onclick="window.history.back()">Отменить</button>
     </form>
