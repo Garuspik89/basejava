@@ -1,14 +1,45 @@
 package com.urise.model;
 
 public enum SectionType {
-    PERSONAL("Личные качества"),
-    OBJECTIVE("Позиция"),
-    ACHIEVEMENT("Достижения"),
-    QUALIFICATIONS("Квалификация"),
-    EXPERIENCE("Опыт работы"),
-    EDUCATION("Образование");
+    PERSONAL("Личные данные") {
+        @Override
+        public String toHtml0(String value) {
+            return getTitle()  + value;
+        }
+    },
+    OBJECTIVE("Позиция") {
+        @Override
+        public String toHtml0(String value) {
+            return value;
+        }
+    },
+    ACHIEVEMENT("Достижения") {
+        @Override
+        public String toHtml0(String value) {
+            return value;
+        }
+    },
+    QUALIFICATIONS("Квалификация") {
+        @Override
+        public String toHtml0(String value) {
+            return value;
+        }
+    },
+    EXPERIENCE("Опыт") {
+        @Override
+        public String toHtml0(String value) {
+            return value;
+        }
+    },
 
-    private String title;
+    EDUCATION("Образование") {
+        @Override
+        public String toHtml0(String value) {
+            return value;
+        }
+    };
+
+    private final String title;
 
     SectionType(String title) {
         this.title = title;
@@ -16,5 +47,13 @@ public enum SectionType {
 
     public String getTitle() {
         return title;
+    }
+
+    protected String toHtml0(String value) {
+        return title + ": " + value;
+    }
+
+    public String toHtml(String value) {
+        return (value == null) ? "" : toHtml0(value);
     }
 }

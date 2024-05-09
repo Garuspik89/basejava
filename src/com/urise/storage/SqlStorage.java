@@ -3,6 +3,7 @@ package com.urise.storage;
 import com.urise.exception.NotExistStorageException;
 import com.urise.model.*;
 import com.urise.sql.SqlHelper;
+import com.urise.util.JsonParser;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -137,23 +138,9 @@ public class SqlStorage implements Storage {
             for (Map.Entry<SectionType, Section> e : r.getSections().entrySet()) {
                 ps.setString(1, r.getUuid());
                 ps.setString(2, e.getKey().name());
-                SectionType sectionType = SectionType.valueOf(String.valueOf(e.getKey()));
-                switch (sectionType) {
-                    case PERSONAL:
-                    case OBJECTIVE: {
-                        TextSection data = (TextSection) e.getValue();
-                        ps.setString(3, data.getData());
-                        ps.addBatch();
-                        break;
-                    }
-                    case ACHIEVEMENT:
-                    case QUALIFICATIONS: {
-                        ListSection data = (ListSection) e.getValue();
-                        ps.setString(3, String.join("\n", data.getData()));
-                        ps.addBatch();
-                        break;
-                    }
-                }
+                Section section = e.getValue();
+                ps.setString(3,JsonParser.write(section,Section.class));
+                ps.addBatch();
             }
             ps.executeBatch();
         }
@@ -216,21 +203,10 @@ public class SqlStorage implements Storage {
     }
 
     private void doSectionToResume(ResultSet rs, Resume resume) throws SQLException {
-        SectionType sectionType = SectionType.valueOf(rs.getString("type"));
-        switch (sectionType) {
-            case PERSONAL:
-            case OBJECTIVE: {
-                resume.addSection(sectionType, new TextSection(rs.getString("value")));
-                break;
-            }
-            case ACHIEVEMENT:
-            case QUALIFICATIONS: {
-                List<String> listOfListSection = new ArrayList<>();
-                String[] lines = rs.getString("value").split("\\n");
-                listOfListSection.addAll(Arrays.asList(lines));
-                resume.addSection(sectionType, new ListSection(listOfListSection));
-                break;
-            }
+        String content = rs.getString("value");
+        if (content!= null) {
+            SectionType sectionType = SectionType.valueOf(rs.getString("type"));
+            resume.addSection(sectionType, JsonParser.read(content, Section.class));
         }
     }
 

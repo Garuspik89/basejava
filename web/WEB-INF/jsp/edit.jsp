@@ -33,25 +33,37 @@
         </c:forEach>
         <c:forEach var="typeSection" items="<%=SectionType.values()%>">
             <c:set var="section" value="${resume.getSection(typeSection)}"/>
-            <c:if test="${not empty section}">
-                <h2><a>${typeSection.title}</a></h2>
-                <jsp:useBean id="section" type="com.urise.model.Section"/>
-                <c:choose>
-                    <c:when test="${typeSection=='OBJECTIVE' || typeSection=='PERSONAL'}">
-                        <input type='text' name='${typeSection}' size=100 value='<%=((TextSection)section).getData()%>'>
-                    </c:when>
+            <jsp:useBean id="typeSection" type="com.urise.model.SectionType"/>
+            <h2><a>${typeSection.title}</a></h2>
+            <c:choose>
+                <c:when test="${typeSection=='OBJECTIVE' || typeSection=='PERSONAL'}">
+                    <c:choose>
+                        <c:when test="${section==null}">
+                            <input type='text' name='${typeSection}' size=100 value="">
+                        </c:when>
+                        <c:when test="${section!=null}">
+                            <input type='text' name='${typeSection}' size=100 value=<%=((TextSection) resume.getSection(typeSection)).getData()%>>
+                        </c:when>
+                    </c:choose>
+                </c:when>
 
-                    <c:when test="${typeSection=='QUALIFICATIONS' || typeSection=='ACHIEVEMENT'}">
+                <c:when test="${typeSection=='QUALIFICATIONS' || typeSection=='ACHIEVEMENT'}">
 
-                   <textarea name='${typeSection}' cols=93
-                             rows=10><%=String.join("\n", ((ListSection) section).getData())%></textarea>
-                    </c:when>
-                </c:choose>
-            </c:if>
+                    <textarea name='${typeSection}' cols=93
+                    <c:choose>
+                        <c:when test="${section==null}">
+                            rows=10><%=String.join("\n","")%></textarea>
+                        </c:when>
+                        <c:when test="${section!=null}">
+                            rows=10><%=String.join("\n", ((ListSection) resume.getSection(typeSection)).getData())%></textarea>
+                        </c:when>
+                    </c:choose>
+                </c:when>
+            </c:choose>
         </c:forEach>
-        <input type="hidden"  name="newResume" value="${newResume}">
-        <button type="submit"   for="newResume">Сохранить</button>
-        <button type ="reset" onclick="window.history.back()">Отменить</button>
+        <input type="hidden" name="newResume" value="${newResume}">
+        <button type="submit" for="newResume">Сохранить</button>
+        <button type="reset" onclick="window.history.back()">Отменить</button>
     </form>
 </section>
 <jsp:include page="fragments/footer.jsp"/>

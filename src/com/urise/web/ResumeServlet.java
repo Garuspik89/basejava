@@ -66,6 +66,10 @@ public class ResumeServlet extends HttpServlet {
         String fullName = request.getParameter("fullName");
         String newResume = request.getParameter("newResume");
         Resume r;
+        if (fullName.trim().isEmpty()) {
+            response.sendRedirect("resume");
+            return;
+        }
         if(newResume.equals("false")) {
             r = storage.get(uuid);
         } else {
@@ -84,10 +88,11 @@ public class ResumeServlet extends HttpServlet {
 
         for (SectionType type : SectionType.values()) {
             String value = request.getParameter(type.name());
-            if (value == null) {
+            if (value == null ) {
                 break;
-            } else if (value.isEmpty()) {
+            } else if (value.trim().isEmpty()) {
                 r.getSections().remove(type);
+                break;
             }
             switch (type) {
                 case OBJECTIVE:

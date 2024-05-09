@@ -34,7 +34,7 @@
             <c:set var="typeSection" value="${sectionEntry.key}"/>
             <c:set var="section" value="${sectionEntry.value}"/>
             <jsp:useBean id="section" type="com.urise.model.Section"/>
-        <c:if test="${not empty section}">
+       <c:if test="${not empty section.getData()}">
         <c:choose>
         <c:when test="${typeSection=='OBJECTIVE' || typeSection=='PERSONAL'}">
     <table border="0" cellpadding="8" cellspacing="0">
