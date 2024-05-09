@@ -42,20 +42,20 @@
                             <input type='text' name='${typeSection}' size=100 value="">
                         </c:when>
                         <c:when test="${section!=null}">
-                            <input type='text' name='${typeSection}' size=100 value=<%=((TextSection) resume.getSection(typeSection)).getData()%>>
+                            <input type='text' name='${typeSection}' size=100 value='${section.data}'>
                         </c:when>
                     </c:choose>
                 </c:when>
 
                 <c:when test="${typeSection=='QUALIFICATIONS' || typeSection=='ACHIEVEMENT'}">
-
-                    <textarea name='${typeSection}' cols=93
                     <c:choose>
                         <c:when test="${section==null}">
-                            rows=10><%=String.join("\n","")%></textarea>
+                             <textarea name='${typeSection}' cols=93
+                                       rows=10><%=String.join("\n", "")%></textarea>
                         </c:when>
                         <c:when test="${section!=null}">
-                            rows=10><%=String.join("\n", ((ListSection) resume.getSection(typeSection)).getData())%></textarea>
+                             <textarea name='${typeSection}' cols=93
+                                       rows=10><%=String.join("\n", ((ListSection) resume.getSection(typeSection)).getData())%></textarea>
                         </c:when>
                     </c:choose>
                 </c:when>
