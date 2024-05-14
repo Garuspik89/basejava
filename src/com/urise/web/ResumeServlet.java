@@ -101,7 +101,7 @@ public class ResumeServlet extends HttpServlet {
                     break;
                 case ACHIEVEMENT:
                 case QUALIFICATIONS:
-                    r.addSection(type, new ListSection(value.split("\\n")));
+                    r.addSection(type, new ListSection(value.replaceAll("(?m)^\\s*$[\r\n]+", "").split("\\n")));
                     break;
             }
         }
