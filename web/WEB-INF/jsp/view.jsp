@@ -1,5 +1,8 @@
 <%@ page import="com.urise.model.TextSection" %>
 <%@ page import="com.urise.model.ListSection" %>
+<%@ page import="com.urise.model.CompanySection" %>
+<%@ page import="com.urise.util.DateUtil" %>
+<%@ page import="com.urise.model.Company" %>
 <%--
 
   Created by IntelliJ IDEA.
@@ -34,7 +37,7 @@
             <c:set var="typeSection" value="${sectionEntry.key}"/>
             <c:set var="section" value="${sectionEntry.value}"/>
             <jsp:useBean id="section" type="com.urise.model.Section"/>
-       <c:if test="${not empty section.getData()}">
+        <c:if test="${not empty section.getData()}">
         <c:choose>
         <c:when test="${typeSection=='OBJECTIVE' || typeSection=='PERSONAL'}">
     <table border="0" cellpadding="8" cellspacing="0">
@@ -59,6 +62,25 @@
                 </td>
             </tr>
         </table>
+    </c:when>
+    <c:when test="${typeSection=='EXPERIENCE' || typeSection=='EDUCATION'}">
+        <c:forEach var="company" items="<%=((CompanySection) section).getData()%>">
+            <tr>
+                <td colspan="2">
+                    <h3>${company.name}</h3>
+                    <h3>${company.webSite}</h3>
+                </td>
+            </tr>
+            <c:forEach var="period" items="${company.periodList}">
+                <jsp:useBean id="period" type="com.urise.model.Company.Period"/>
+                <tr>
+                    <td width="15%"
+                        style="vertical-align: top"><%=DateUtil.of(period.getFirstDate().getYear(), period.getFirstDate().getMonth()) + " - " + DateUtil.of(period.getSecondDate().getYear(), period.getSecondDate().getMonth())%>
+                    </td>
+                    <td><b>${period.title}</b></td> <td>${period.description}</td>
+                </tr>
+            </c:forEach>
+        </c:forEach>
     </c:when>
     </c:choose>
     </c:if>

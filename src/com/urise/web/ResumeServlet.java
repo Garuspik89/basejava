@@ -4,6 +4,7 @@ import com.Config;
 import com.urise.exception.StorageException;
 import com.urise.model.*;
 import com.urise.storage.Storage;
+import com.urise.util.DateUtil;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletRequest;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ResumeServlet extends HttpServlet {
@@ -52,8 +54,8 @@ public class ResumeServlet extends HttpServlet {
                 throw new IllegalArgumentException("Action " + action + " is illegal");
         }
 
-        request.setAttribute("resume",r);
-        request.setAttribute("newResume",newResume);
+        request.setAttribute("resume", r);
+        request.setAttribute("newResume", newResume);
         request.getRequestDispatcher(
                 ("view".equals(action) ? "/WEB-INF/jsp/view.jsp" : "/WEB-INF/jsp/edit.jsp")
         ).forward(request, response);
@@ -70,11 +72,10 @@ public class ResumeServlet extends HttpServlet {
             response.sendRedirect("resume");
             return;
         }
-        if(newResume.equals("false")) {
+        if (newResume.equals("false")) {
             r = storage.get(uuid);
         } else {
-            r = new Resume(uuid,fullName);
-            storage.save(r);
+            r = new Resume(uuid, fullName);
         }
         r.setFullName(fullName);
         for (ContactType type : ContactType.values()) {
@@ -88,11 +89,11 @@ public class ResumeServlet extends HttpServlet {
 
         for (SectionType type : SectionType.values()) {
             String value = request.getParameter(type.name());
-            if (value == null ) {
-                break;
+            if (value == null) {
+                continue;
             } else if (value.trim().isEmpty()) {
                 r.getSections().remove(type);
-                break;
+                continue;
             }
             switch (type) {
                 case OBJECTIVE:
@@ -103,9 +104,40 @@ public class ResumeServlet extends HttpServlet {
                 case QUALIFICATIONS:
                     r.addSection(type, new ListSection(value.replaceAll("(?m)^\\s*$[\r\n]+", "").split("\\n")));
                     break;
+                case EDUCATION:
+                case EXPERIENCE:
+                    List<Company> companies = new ArrayList<>();
+                    String[] companyNames = request.getParameterValues(type.name() + "companyName");
+                    String[] webSites = request.getParameterValues(type.name() + "webSite");
+                    List<Company.Period> periods = new ArrayList<>();
+                    for (int i = 0; i < companyNames.length; i++) {
+                        String companyName = companyNames[i];
+                        String webSite = webSites[i];
+                        String[] titles = request.getParameterValues(type.name() + i + "title");
+                        for (int j = 0; j < titles.length; j++) {
+                            String[] firstDates = request.getParameterValues(type.name() + j + "firstDate");
+                            String[] secondDates = request.getParameterValues(type.name() + j + "secondDate");
+                            String[] titlesOfPeriods = request.getParameterValues(type.name() + j + "title");
+                            String[] descriptions = request.getParameterValues(type.name() + j + "description");
+                            periods.add(new Company.Period(DateUtil.unmarshal(firstDates[j]), DateUtil.unmarshal(secondDates[j]), titlesOfPeriods[j], descriptions[j]));
+                        }
+                        companies.add(new Company(companyName, webSite, periods));
+                    }
+                    if (newResume.equals("true")) {
+                        r.addSection(type, new CompanySection(companies));
+                    } else {
+                        r.getSections().remove(type);
+                        r.addSection(type, new CompanySection(companies));
+                    }
+
+                    break;
             }
         }
-        storage.update(r);
+        if (newResume.equals("true")) {
+            storage.save(r);
+        } else {
+            storage.update(r);
+        }
         response.sendRedirect("resume");
     }
 }
