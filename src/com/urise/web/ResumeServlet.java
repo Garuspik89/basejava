@@ -107,7 +107,7 @@ public class ResumeServlet extends HttpServlet {
                 case EDUCATION:
                 case EXPERIENCE:
                     List<Company> companies = new ArrayList<>();
-                    String[] companyNames = request.getParameterValues(type.name() + "companyName");
+                    String[] companyNames = request.getParameterValues(type.name());
                     String[] webSites = request.getParameterValues(type.name() + "webSite");
                     List<Company.Period> periods = new ArrayList<>();
                     for (int i = 0; i < companyNames.length; i++) {

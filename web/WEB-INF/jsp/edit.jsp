@@ -69,11 +69,7 @@
                                 <dt>Компания:</dt>
                                 <dd><input type="text" required name='${typeSection}' size=100 value="${company.name}">
                                 </dd>
-                                <input type="hidden" required name="${typeSection}companyName" size=100
-                                       value="${company.name}">
-                                <dt>Сайт:</dt>
-                                <dd><input type="text" name='${typeSection}' size=100 value="${company.webSite}"></dd>
-                                <input type="hidden" name="${typeSection}webSite" size=100 value="${company.webSite}">
+                                <dd><input type="text" name='${typeSection}webSite' size=100 value="${company.webSite}"></dd>
                                 </dd>
                                 <br>
 
@@ -109,11 +105,10 @@
                             <dt>Компания:</dt>
                             <dd><input type="text" required name='${typeSection}' size=100 value="">
                             </dd>
-                            <input type="hidden" required name="${typeSection}companyName" size=100
-                                   value="">
+
                             <dt>Сайт:</dt>
-                            <dd><input type="text" name='${typeSection}' size=100 value=""></dd>
-                            <input type="hidden" name="${typeSection}webSite" size=100 value="">
+                            <dd><input type="text" name='${typeSection}webSite' size=100 value=""></dd>
+
                             </dd>
                             <br>
                             <dl>
