@@ -67,7 +67,7 @@
                                        items="<%=((CompanySection) resume.getSection(typeSection)).getData()%>"
                                        varStatus="counter">
                                 <dt>Компания:</dt>
-                                <dd><input type="text" required name='${typeSection}' size=100 value="${company.name}">
+                                <dd><input type="text"  name='${typeSection}' size=100 value="${company.name}">
                                 </dd>
                                 <dd><input type="text" name='${typeSection}webSite' size=100 value="${company.webSite}"></dd>
                                 </dd>
@@ -78,14 +78,14 @@
                                     <dl>
                                         <dt>Дата начала:</dt>
                                         <dd>
-                                            <input type="text" name="${typeSection}${counter.index}firstDate" size=15
+                                            <input type="text" name="${typeSection}${counter.index}firstDate" size=15 placeholder="yyyy-mm-dd"
                                                    value="<%=DateUtil.of(periods.getFirstDate().getYear(),periods.getFirstDate().getMonth())%>">
                                         </dd>
                                     </dl>
                                     <dl>
                                         <dt>Дата окончания:</dt>
                                         <dd>
-                                            <input type="text" name="${typeSection}${counter.index}secondDate" size=15
+                                            <input type="text" name="${typeSection}${counter.index}secondDate" size=15  placeholder="yyyy-mm-dd"
                                                    value="<%=DateUtil.of(periods.getSecondDate().getYear(),periods.getSecondDate().getMonth())%>">
                                     </dl>
                                     <dl>
@@ -103,7 +103,7 @@
                         </c:when>
                         <c:when test="${section==null}">
                             <dt>Компания:</dt>
-                            <dd><input type="text" required name='${typeSection}' size=100 value="">
+                            <dd><input type="text" name='${typeSection}' size=100 value="">
                             </dd>
 
                             <dt>Сайт:</dt>
@@ -114,14 +114,14 @@
                             <dl>
                                 <dt>Дата начала:</dt>
                                 <dd>
-                                    <input type="text" name="${typeSection}0firstDate" size=15
+                                    <input type="text" name="${typeSection}0firstDate" size=15 placeholder="yyyy-mm-dd"
                                            value="">
                                 </dd>
                             </dl>
                             <dl>
                                 <dt>Дата окончания:</dt>
                                 <dd>
-                                    <input type="text" name="${typeSection}0secondDate" size=15
+                                    <input type="text" name="${typeSection}0secondDate" size=15 placeholder="yyyy-mm-dd"
                                            value="">
                             </dl>
                             <dl>

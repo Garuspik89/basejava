@@ -164,7 +164,7 @@ public abstract class AbstractStorageTest {
         storage.update(resumeForUpdating);
         Assert.assertEquals(resumeForUpdating, storage.get(UUID_1));
     }
-/*
+
  @Test
     public void clear() {
      storage.clear();
@@ -173,7 +173,7 @@ public abstract class AbstractStorageTest {
      Resume[] emptyResumes = new Resume[0];
      Assert.assertArrayEquals(resumesAfterClear, emptyResumes);
 
- }*/
+ }
     @Test
     public void getAll() {
         Resume[] actual = storage.getAllSorted().toArray(new Resume[1]);
